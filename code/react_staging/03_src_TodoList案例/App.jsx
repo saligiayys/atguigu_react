@@ -15,7 +15,8 @@ import './App.css'
 
 //相关知识点在README里有总结
 
-//首先，每个人拆分组件的方式是不一样的，你也可以自己拆，但一定要合理。这里选择拆分成四个组件，Header,List,Item,Footer
+//首先，每个人拆分组件的方式是不一样的，你也可以自己拆，但一定要合理。关键词：功能点
+//这里选择拆分成四个组件，Header,List,Item,Footer
 //拆分组件的通用思想看老师的笔记。在公司里拿到一个传统方式写的老项目，如果要改成react，就要有拆分组件的能力！（这是一个费事的工作）
 //此案例的准备工作。
 //1.从静态文件里把整个html结构复制到App.jsx里（然后在慢慢拆成组件）。
@@ -35,27 +36,30 @@ export default class App extends Component {
 	//App作为父组件可以很容易的给子组件传递props
 	//但子组件是否可以向父组件传递呢？
 	//可以。父组件可以通过props向子组件传递一个函数，由子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
+	//也就是子组件直接调用父组件传递来的函数，用的参数是子组件的。
 	//这是组件间的通信办法之一
 
-	//状态在哪里，操作状态的方法就在哪里!!!。但不一定是App调用。这里就是吧addTodo,updateTodo等方法传给了子组件
+	//状态在哪里，操作状态的方法就定义 在哪里!!!。但不一定是App调用。这里就是吧addTodo,updateTodo等方法传给了子组件
 	//初始化状态。通过props把state里的todos传递给List
 	//todos数组，里面的每个元素是一个对象
-	state = {todos:[
-		{id:'001',name:'吃饭',done:true},
-		{id:'002',name:'睡觉',done:true},
-		{id:'003',name:'打代码',done:false},
-		{id:'004',name:'逛街',done:false}
-	]}
+	state = {
+		todos: [
+			{ id: '001', name: '吃饭', done: true },
+			{ id: '002', name: '睡觉', done: true },
+			{ id: '003', name: '打代码', done: false },
+			{ id: '004', name: '逛街', done: false }
+		]
+	}
 
 	//addTodo用于添加一个todo，接收的参数是todo对象
 	//父组件可以通过props向子组件Header传递一个函数，由子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	addTodo = (todoObj)=>{
+	addTodo = (todoObj) => {
 		//获取原todos
-		const {todos} = this.state
+		const { todos } = this.state
 		//追加一个todo  react不建议使用原生数组的方法，所以不建议使用unshift
-		const newTodos = [todoObj,...todos]
+		const newTodos = [todoObj, ...todos];//新的todo放在最前面
 		//更新状态
-		this.setState({todos:newTodos})
+		this.setState({ todos: newTodos });//把加工完的数组放进去
 	}
 	//整体的交互模型：
 	//App开始存有一些todos(待办的事项)，传给List。App还有一个函数addTodo，传给了Header，用于接收一个todoObj
@@ -65,68 +69,71 @@ export default class App extends Component {
 
 	//updateTodo用于更新一个todo对象
 	//父组件可以通过props向子组件List传递一个函数，再由List传给它的子组件Item，由(孙)子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	updateTodo = (id,done)=>{
+	updateTodo = (id, done) => {
 		//获取状态中的todos
-		const {todos} = this.state
+		const { todos } = this.state
 		//匹配处理数据。使用map遍历：map返回一个新的数组，数组中的元素为原始数组调用函数处理后的值。
-		const newTodos = todos.map((todoObj)=>{
-			//如果匹配上了，返回一个新的对象
-			if(todoObj.id === id) return {...todoObj,done}//注意这里使用了简写，原来是done:done
-				//没有匹配上，返回原来的对象
-			else return todoObj
+		const newTodos = todos.map((todoObj) => {
+			//如果匹配上了，返回一个新的对象，用展开运算符复制一个对象
+			if (todoObj.id === id) return { ...todoObj, done }//注意这里使用了简写，原来是done:done
+			/*复习：注意这个{...obj1}和react里{...obj1}的区别！！！前面的是对象展开，后面的是在{}写js表达式！！！
+				let obj1 = {a:1,b:2};
+				let obj2 = {...obj1,b:3};
+				console.log(obj2); //{a:1,b:3}	b:3替代了之前的b:2
+			*/
+			else return todoObj//没有匹配上，返回原来的对象
 		})
-		this.setState({todos:newTodos})
+		this.setState({ todos: newTodos })
 
-		/*复习：注意这个{...obj1}和react里{...obj1}的区别！！！前面的是解构，后面的是在{}写js表达式！！！
-			let obj1 = {a:1,b:2};
-			let obj2 = {...obj1,b:3};
-			console.log(obj2); //{a:1,b:3}
-		*/
 	}
 
 	//deleteTodo用于删除一个todo对象
 	//父组件可以通过props向子组件List传递一个函数，再由List传给它的子组件Item，由(孙)子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	deleteTodo = (id)=>{//注意这里有个坑，不要把函数名叫做delete，delete是关键字！用于删除某个对象里的指定属性。例如：let obj = {a:2,b:3}; delete obj.a
+	deleteTodo = (id) => {//注意这里有个坑，不要把函数名叫做delete，delete是关键字！用于删除某个对象里的指定属性。例如：let obj = {a:2,b:3}; delete obj.a
 		//获取原来的todos
-		const {todos} = this.state
+		const { todos } = this.state
 		//删除指定id的todo对象
 		//使用filter。比如要删除id=002的，则要把那些id不是002的过滤出来返回，002不返回
 		//思考：是否可以使用splice
-		const newTodos = todos.filter((todoObj)=>{
+		const newTodos = todos.filter((todoObj) => {
 			return todoObj.id !== id
 		})
 		//更新状态
-		this.setState({todos:newTodos})
+		this.setState({ todos: newTodos })
 	}
 
 	//checkAllTodo用于全选
 	//把它传给Footer
-	checkAllTodo = (done)=>{
+	checkAllTodo = (done) => {
 		//获取原来的todos
-		const {todos} = this.state
+		const { todos } = this.state
 		//加工数据。弹幕：forEach性能更好
-		const newTodos = todos.map((todoObj)=>{
-			return {...todoObj,done}//把所有done改为true，这里又实用了简写，原来是done:done
+		const newTodos = todos.map((todoObj) => {
+			// return { ...todoObj, done:true }//这样写的后果是，Footer里的checkbox变成了全选按钮，无法全部选
+			return { ...todoObj, done }//因此需要根据Footer里checkbox的checked值，设置done是true还是false
+			//这里又实用了简写，原来是done:done
 		})
 		//更新状态
-		this.setState({todos:newTodos})
+		this.setState({ todos: newTodos })
 	}
 
 	//clearAllDone用于清除所有已完成的
 	//把它传给Footer
-	clearAllDone = ()=>{
+	clearAllDone = () => {
 		//获取原来的todos
-		const {todos} = this.state
+		const { todos } = this.state
 		//过滤数据
-		const newTodos = todos.filter((todoObj)=>{
-			return !todoObj.done//把done为false的过滤出来返回，去掉done为true的
+		const newTodos = todos.filter((todoObj) => {
+			// return todoObj.done === false; //过滤出done为false的todo添加到新数组，去掉done为true的todo
+			//也可以这么写，负负得正，直接过滤出done为false的todo添加到新数组
+			return !todoObj.done
 		})
 		//更新状态
-		this.setState({todos:newTodos})
+		this.setState({ todos: newTodos })
 	}
 
 	render() {
-		//注意！！传递参数的时候！千万不要加()!!!!
+		//注意！！传递参数的时候！千万不要加()!!!!后期发现：加也没事吧？顶多是把返回值传走，因此要看情况
 		//通过props，将state里的todos传给List
 		//通过props，将App的addTodo函数传给Header
 		//通过props，将App的updateTodo传给List，再由List传给它的子组件Item
@@ -135,13 +142,13 @@ export default class App extends Component {
 		//通过props，将App的checkAllTodo函数传给Footer
 		//通过props，将App的clearAllDone函数传给Footer
 		//自己优化了一下Header，不能输入重复，所以给Header传了一个todos
-		const {todos} = this.state
+		const { todos } = this.state
 		return (
 			<div className="todo-container">
 				<div className="todo-wrap">
-					<Header addTodo={this.addTodo} todos={todos}/>
-					<List todos={todos} updateTodo={this.updateTodo} deleteTodo={this.deleteTodo}/>
-					<Footer todos={todos} checkAllTodo={this.checkAllTodo} clearAllDone={this.clearAllDone}/>
+					<Header addTodo={this.addTodo} todos={todos} />
+					<List todos={todos} updateTodo={this.updateTodo} deleteTodo={this.deleteTodo} />
+					<Footer todos={todos} checkAllTodo={this.checkAllTodo} clearAllDone={this.clearAllDone} />
 				</div>
 			</div>
 			//todos={todos}不用写this.是因为在render里通过todos接收了。

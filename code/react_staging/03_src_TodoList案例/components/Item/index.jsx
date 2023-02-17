@@ -3,7 +3,7 @@ import './index.css'
 
 export default class Item extends Component {
 
-	//这里其实也应该写propTypes进行限制，但老师没写的目的是为了告诉你，这个在实际开发中很多人不写。但是推荐写（有ts就不需要propTypes了）
+	//这里其实也应该写propTypes进行限制，但老师没写的目的是为了告诉你，这个在实际开发中很多人不写。但是推荐写（而且有ts就不需要propTypes了）
 
 	state = {mouse:false} //标识鼠标移入、移出。一上来默认是false，即鼠标没有在任何人的身上
 
@@ -35,8 +35,8 @@ export default class Item extends Component {
 		}
 	}
 
-	//补充：在react里，checked=true只读，写死了，写了不能再修改了。除非用onChange
-	//而，defaultChecked是默认，也就是只管你一上来勾选还是不勾选，后续可以修改
+	//补充：在react里，checked=true只读，写死了，点击无效。除非用onChange
+	//而，defaultChecked是默认，也就是只管你一上来勾选还是不勾选，仍然可以点击
 	//但defaultChecked是临时的措施，它可能会产生bug。后续会换成别的。
 	//这个bug是，在Footer里，已完成的左边有一个全选或全不选按钮。
 	//因为defaultChecked只有一上来勾选或不勾选，因此之后无论上面的item是否全部勾选与否，它都不会再自己改变了
@@ -58,7 +58,7 @@ export default class Item extends Component {
 					<input type="checkbox" checked={done} onChange={this.handleCheck(id)}/>
 					<span>{name}</span>
 				</label>
-				<button onClick={()=> this.handleDelete(id,name) } className="btn btn-danger" style={{display:mouse?'block':'none'}}>删除</button>
+				<button onClick={(event)=> this.handleDelete(id,name) } className="btn btn-danger" style={{display:mouse?'block':'none'}}>删除</button>
 			</li>
 		)
 	}

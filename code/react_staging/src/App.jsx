@@ -1,153 +1,68 @@
 import React, { Component } from 'react'
-import Header from './components/Header'
-import List from './components/List'
-import Footer from './components/Footer'
-import './App.css'
-
-//因为后面的课程用到了bootstrap而这里没用，因此需要把public里的index.html的引入bootstrap注掉，不然结构会乱
-
-//引入原则：第三方的包(比如react核心)放在最上面，自己的包放在中间，样式包放最下面
-
-//需求：
-// 功能: 组件化实现此功能
-// 1. 显示所有todo列表
-// 2. 输入文本, 点击按钮显示到列表的首位, 并清除输入的文本
-
-//相关知识点在README里有总结
-
-//首先，每个人拆分组件的方式是不一样的，你也可以自己拆，但一定要合理。关键词：功能点
-//这里选择拆分成四个组件，Header,List,Item,Footer
-//拆分组件的通用思想看老师的笔记。在公司里拿到一个传统方式写的老项目，如果要改成react，就要有拆分组件的能力！（这是一个费事的工作）
-//此案例的准备工作。
-//1.从静态文件里把整个html结构复制到App.jsx里（然后在慢慢拆成组件）。
-//但由于静态文件中的html也用到了id=root的div，而public的index.html里已经有root的div了，因此不需要copy过来。
-//但需要double-check一下css里有没有使用root定义的样式。
-//2.把class=全部替换成className=
-//3.把style="xxx:yyy" 全部替换成 style={{xxx:"yyy"}}
-//4.从静态文件里把css文件复制到App.css里，然后在慢慢拆成组件。记得在App.jsx里引入样式
-//5.开始考虑如何拆分组件，先结构，再样式
-//6.通过拆分，把对应的html放入相应的组件，再在html原先的位置上写上对应的组件，并在上面引入。
-//7.相较而言，拆分样式比拆分结构难。尤其是注释很乱，或没有注释的情况
-//8.把对应的样式放入对应到组件中，并引入
+import axios from 'axios'
 
 export default class App extends Component {
-	//以目前所学的内容，无法实现兄弟组件Header和List之间的交互。（之后可以使用消息订阅与发布）
-	//因此，由于这两者的父组件都是App，因此通过App和这两者进行交互
-	//App作为父组件可以很容易的给子组件传递props
-	//但子组件是否可以向父组件传递呢？
-	//可以。父组件可以通过props向子组件传递一个函数，由子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	//也就是子组件直接调用父组件传递来的函数，用的参数是子组件的。
-	//这是组件间的通信办法之一
+	//网络请求。通过axios发送ajax请求
 
-	//状态在哪里，操作状态的方法就在哪里!!!。但不一定是App调用。这里就是吧addTodo,updateTodo等方法传给了子组件
-	//初始化状态。通过props把state里的todos传递给List
-	//todos数组，里面的每个元素是一个对象
-	state = {todos:[
-		{id:'001',name:'吃饭',done:true},
-		{id:'002',name:'睡觉',done:true},
-		{id:'003',name:'打代码',done:false},
-		{id:'004',name:'逛街',done:false}
-	]}
+	//先yarn add axios
+	//然后引入axios
 
-	//addTodo用于添加一个todo，接收的参数是todo对象
-	//父组件可以通过props向子组件Header传递一个函数，由子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	addTodo = (todoObj)=>{
-		//获取原todos
-		const {todos} = this.state
-		//追加一个todo  react不建议使用原生数组的方法，所以不建议使用unshift
-		const newTodos = [todoObj,...todos];//新的todo放在最前面
-		//更新状态
-		this.setState({todos:newTodos});//把加工完的数组放进去
-	}
-	//整体的交互模型：
-	//App开始存有一些todos(待办的事项)，传给List。App还有一个函数addTodo，传给了Header，用于接收一个todoObj
-	//Header会在合适的时候，调用“当年”App通过props传给他的addTod函数，通过该函数把todoObj交给了App
-	//App在拿到todoObj后，放到自己的状态(state)里，导致自己状态的更改，从而重新调用App的render函数
-	//App的render函数调用后，引发了子组件List的重新渲染，然后就在页面上展示出来了。
+	//启动服务器：
+	//找到06其他里的测试代理服务器。
+	//输入命令 node server1.js
 
-	//updateTodo用于更新一个todo对象
-	//父组件可以通过props向子组件List传递一个函数，再由List传给它的子组件Item，由(孙)子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	updateTodo = (id,done)=>{
-		//获取状态中的todos
-		const {todos} = this.state
-		//匹配处理数据。使用map遍历：map返回一个新的数组，数组中的元素为原始数组调用函数处理后的值。
-		const newTodos = todos.map((todoObj)=>{
-			//如果匹配上了，返回一个新的对象
-			if(todoObj.id === id) return {...todoObj,done}//注意这里使用了简写，原来是done:done
-				//没有匹配上，返回原来的对象
-			else return todoObj
-		})
-		this.setState({todos:newTodos})
+	getStudentData = ()=>{
+		//说一下跨域的问题。可以发送请求，但数据回不来。如何证明？服务器端显示：有人请求服务器1
+		//因为ajax引擎的存在，允许客户端3000端口向服务器5000端口发送请求，但不允许返回的数据被3000端口接收
+		//如何解决？在react脚手架里，通过配置代理来解决。
+		//比如客户端端口是3000，服务器是5000，需要一个中间人(代理)，且端口和客户端一样是3000。
+		//也就是3000端口开着react的脚手架，同时也开着一个代理(一个微小的服务器)
+		//因此客户端可以向代理发送请求，代理转发给服务器，服务器把数据发给代理(代理没有ajax引擎因此可以接收)，代理再发给客户端。
+		//因此不存在跨域问题，同源策略不会限制。
+		//相当于你自己办不到的事，你托别人给办了
+		//如何开启代理？react里有两种方式
+		//方式一：在package.json里添加一个:"proxy":"http://localhost:5000"
+		//注意不要写5000/students，这样就写死了，万一还有teacher，school啥的呢？
+		//因为修改了package.json文件，需要重启脚手架
+		//同时要把这里url里的端口号改成3000。因为这里是客户端，要给代理(也是3000)发，然后又代理发送给服务器(5000)
+		//但方式一不太完美。因为"http://localhost:5000"的意思是，只要3000没有的资源，就去5000找，相当于写死了，只能写一个代理。
+		// 而我们除了有server1还有server2。因此引申出了方式二，见：setupProxy.js。如果需要向多个服务器请求数据，需要配置多个代理，就不能在package.json里配置了。记得删除方式一的代理！
+		//注意这个文件名不能改，react底层会找这个文件。
+		//node server2.js开启第二个服务器
+		//ps:在浏览器地址栏输入一个网址回车就是get请求。可以借助该特点来测试服务器的接口是否成功可用。
 
-		/*复习：注意这个{...obj1}和react里{...obj1}的区别！！！前面的是解构，后面的是在{}写js表达式！！！
-			let obj1 = {a:1,b:2};
-			let obj2 = {...obj1,b:3};
-			console.log(obj2); //{a:1,b:3}
-		*/
+		//方式一相关：
+		// axios.get('http://localhost:5000').then(
+		// axios.get('http://localhost:3000/index.html').then(
+		//虽然代理中，配置了向端口5000发送命令的代码，但如果3000端口下有你要找的文件，比如index.html，则不需要进行转发。因此5000端口那边不会显示：有人请求服务器1
+		//因为，其实public文件目录，就是3000端口这台react帮你开启的服务器的根目录
+
+		// axios.get('http://localhost:3000/index2.html').then(
+		//但因为没有index2.html，因此会转发给5000，但是5000也没有，所以会报404，但5000端口那边依然会显示：有人请求服务器1
+
+		// axios.get('http://localhost:3000').then(
+
+		//方式二相关：
+		// axios.get('http://localhost:3000/students').then(//这么些不会请求代理，因为没有/api1
+		axios.get('http://localhost:3000/api1/students').then(//见到/api1转发给5000。注意/api1一定要写在3000的后面
+			response => {console.log('成功了',response.data);},//对于axios，服务器返回的数据是在data里
+			error => {console.log('失败了',error);}
+		)
 	}
 
-	//deleteTodo用于删除一个todo对象
-	//父组件可以通过props向子组件List传递一个函数，再由List传给它的子组件Item，由(孙)子组件接收后，在合适的时候调用该函数，可以实现逆向给父组件传递props
-	deleteTodo = (id)=>{//注意这里有个坑，不要把函数名叫做delete，delete是关键字！用于删除某个对象里的指定属性。例如：let obj = {a:2,b:3}; delete obj.a
-		//获取原来的todos
-		const {todos} = this.state
-		//删除指定id的todo对象
-		//使用filter。比如要删除id=002的，则要把那些id不是002的过滤出来返回，002不返回
-		//思考：是否可以使用splice
-		const newTodos = todos.filter((todoObj)=>{
-			return todoObj.id !== id
-		})
-		//更新状态
-		this.setState({todos:newTodos})
-	}
-
-	//checkAllTodo用于全选
-	//把它传给Footer
-	checkAllTodo = (done)=>{
-		//获取原来的todos
-		const {todos} = this.state
-		//加工数据。弹幕：forEach性能更好
-		const newTodos = todos.map((todoObj)=>{
-			return {...todoObj,done}//把所有done改为true，这里又实用了简写，原来是done:done
-		})
-		//更新状态
-		this.setState({todos:newTodos})
-	}
-
-	//clearAllDone用于清除所有已完成的
-	//把它传给Footer
-	clearAllDone = ()=>{
-		//获取原来的todos
-		const {todos} = this.state
-		//过滤数据
-		const newTodos = todos.filter((todoObj)=>{
-			return !todoObj.done//把done为false的过滤出来返回，去掉done为true的
-		})
-		//更新状态
-		this.setState({todos:newTodos})
+	getCarData = ()=>{
+		axios.get('http://localhost:3000/api2/cars').then(//见到/api2转发给5001
+			response => {console.log('成功了',response.data);},
+			error => {console.log('失败了',error);}
+		)
 	}
 
 	render() {
-		//注意！！传递参数的时候！千万不要加()!!!!
-		//通过props，将state里的todos传给List
-		//通过props，将App的addTodo函数传给Header
-		//通过props，将App的updateTodo传给List，再由List传给它的子组件Item
-		//通过props，将App的deleteTodo传给List，再由List传给它的子组件Item
-		//通过props，将state里的todos传给Footer，用于实现 已完成，全部 的统计
-		//通过props，将App的checkAllTodo函数传给Footer
-		//通过props，将App的clearAllDone函数传给Footer
-		//自己优化了一下Header，不能输入重复，所以给Header传了一个todos
-		const {todos} = this.state
 		return (
-			<div className="todo-container">
-				<div className="todo-wrap">
-					<Header addTodo={this.addTodo} todos={todos}/>
-					<List todos={todos} updateTodo={this.updateTodo} deleteTodo={this.deleteTodo}/>
-					<Footer todos={todos} checkAllTodo={this.checkAllTodo} clearAllDone={this.clearAllDone}/>
-				</div>
+			<div>
+				<button onClick={this.getStudentData}>点我获取学生数据</button>
+				<button onClick={this.getCarData}>点我获取汽车数据</button>
 			</div>
-			//todos={todos}不用写this.是因为在render里通过todos接收了。
-			//而updateTodo={this.updateTodo}没有接收，是类的成员，因此要用this.
 		)
 	}
 }
