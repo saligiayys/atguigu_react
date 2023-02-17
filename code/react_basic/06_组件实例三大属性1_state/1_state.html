@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>state</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		/*
+			状态：
+				人		状态		影响		行为
+				组件	状太		驱动		页面
+		*/
+
+
+		// 需求: 定义一个展示天气信息的组件
+		// 1.	默认展示天气炎热 或 凉爽
+		// 2.	点击文字切换天气
+
+		//第一讲时说过，react通过数据创建虚拟DOM，然后创建真实DOM展示页面。
+		//而数据就是放在state里的。
+		//组件的状态里存放着数据，数据的改变就会驱动页面的展示。
+
+		//注意，下面的写法虽然标准，但开发中使用的是简写方式。
+
+		//如何在组件外部获取组件实例对象的this的方式(只是了解一下，因为这么写并不合理，只是强行获取了this)
+		// let that;
+
+		//1.创建组件
+		class Weather extends React.Component {
+
+			//构造器调用几次？ ———— 1次
+			//构造器中的this，一定是当前类的实例对象
+			constructor(props) {//这里要写props，至于为什么，讲到props的时候细说
+				// 我的感想：props就像PHP里的$_POST等超级全局变量。
+				//当你写<Weather />时，react帮你new的该组件实例对象，传参数也是，比如<Weahter name="Ethan"/>
+				//可以把这个想象成 new Weather(name:"Ethan")，然后React统一把参数作为键值对放在了props里
+				console.log('constructor只调用一次');//用来测试构造器执行的次数
+				//之前说super必须放在第一行，指的是super和this的操作。其他操作可以放在super前
+				super(props)
+				//初始化状态。state里要传入对象，里面是一组一组的key:value
+				//其实很合理，如果用数组，得按顺序拿，且需要索引，人记不住索引。
+				//并且setState()要求传入的参数是一个对象
+				//补充：未初始化时，现在的版本state:null, 以前版本 state:{}
+				this.state = { isHot: false, wind: '微风' }//里面的数据就会保存到组件实例对象的state属性中
+
+				//如何在组件外部获取组件实例对象的this的方式(只是了解一下，因为这么写并不合理，只是强行获取了this)
+				// that = this;
+
+				//解决changeWeather中this指向问题
+				this.changeWeather = this.changeWeather.bind(this)
+				//首先，构造器中的this，就是组建的实例对象
+				//右边的 this.changeWeather 是从原型上找到的，因为下面定义changeWeather时，是放在原型上的。
+				//bind()传入当前实例对象的this，改变了changeWeather函数中的this为当前类的实例，bind()不会调用这个函数而是生成一个新的函数。
+				//然后把这个新的函数，放在了实例自身上（等号左边），且起了一个名字也叫changeWeather
+				//因此，实例对象身上，会拥有一个自身的方法，也叫changeWeather。
+				//当下面onClick={this.changeWeather}时，调用的是自身的changeWeather，不用再去原型上找了。
+				// 也就是用原型上的changeWeather，生成了一个新的changeWeather，挂在了实例上
+				//复习，原型链，调用一个方法，如果实例身上有，则调用，否则继续顺着原型链找，直到找到为止
+			}
+
+			//render调用几次？ ———— 1+n次 1是初始化的那次 n是状态更新的次数。每次状态(state)更新（setState()），都会重新调用render()，渲染组件
+			//render()的this是谁？
+			//因为你写了<Weather/> React帮你new了一个Weather
+			//react发现组件是使用类定义的，随后new出来该类的实例，并通过该实例调用到原型上的render方法。
+			//所以render中的this是当前类的实例对象
+			render() {
+				console.log(this);
+				console.log('render 1+n次');//用来测试render执行的次数
+				//读取状态。这里使用了对象的解构赋值
+				const { isHot, wind } = this.state//render里的this是组件实例对象
+				// return	<h1>今天天气很{isHot ? "炎热" : "凉爽"}</h1>
+				return <h1 id="title" onClick={this.changeWeather}>今天天气很{isHot ? '炎热' : '凉爽'}，{wind}</h1>
+				//在react里，推荐用复习->2_原生事件绑定里的方式三
+				//但是要用驼峰法，也就是不能写onclick而是onClick。具体为啥后面事件处理的时候讲
+				//且这里和之前讲的，fontSize不带引号。"font-size"要带引号。没有关系（大概）
+				//并且不能写onClick="changeWeather()"
+				//也不能写onClick={this.changeWeather()}，因为这样是函数调用，相当于把这个函数的结果赋值给了onClick，而这个函数没有return所以是undefined。
+				//所以要把changeWeather本身赋值给onClick，当你点击的时候，react帮你调用。
+			}
+
+			//changeWeather调用几次？ ———— 点几次调几次
+			changeWeather() {
+				//changeWeather放在哪里？ ———— Weather的原型对象上，供实例使用
+				//通过Weather实例调用changeWeather时，changeWeather中的this就是Weather的实例对象。看下面的 const w
+				//但！由于changeWeather是作为onClick的回调函数调用的，所以不是通过实例调用的，是直接调用。相当于onClick = this.changeWeather
+				//并且，类中的方法默认开启了局部的严格模式，所以changeWeather中的this为undefined (看复习3)
+				//这样相当于，直接调用了changeWeather()，而不是this.changeWeather()。因此里面的this不是实例对象，也不是window，而是undefined
+				//见复习->3_类方法中的this指向.html
+				//解决方式：在构造器里：this.changeWeather = this.changeWeather.bind(this)
+				//因此，在react里，自己写的方法，都是是作为事件触发后要执行的方法来使用的。
+				// （因为不是你new的实例对象，都是由react帮你new，并调用render的，不会去调用别的方法！！）
+
+				console.log('changeWeather');//用来测试changeWeather执行的次数
+				//获取原来的isHot值
+				const isHot = this.state.isHot
+
+				//正确的方式
+				//严重注意：state不可直接更改，需要借助一个react的内置api，setState去更改。setState在React.Component的原型对象里
+				//状态必须通过setState进行更新,且这个更新是一种合并，不是直接替换掉整个state里的对象。即同名的覆盖，不同名的依然保留
+				//也就是，之前state = {isHot:false,wind:'微风'}。
+				//通过setState修改后是state = {isHot:true,wind:'微风'}，而不是state = {isHot:true}。微风依然保留。
+				this.setState({ isHot: !isHot })//参数要以对象的形式传入。因为state里有多组key-value。光写值的话不知道是谁。
+				console.log(this);
+				//可以说，之所以state是三大属性之一，就是因为有setState方法。
+
+				//错误的方式
+				//严重注意：状态(state)不可直接更改，下面这行就是直接更改！！！也就是直接给变量赋值 
+				//this.state.isHot = !isHot //这是错误的写法
+				//虽然在控制台上改了，即代码层面改了，但是react不认可这种方式。Components里的state依然不会改变
+			}
+
+		}
+		//2.渲染组件到页面
+		ReactDOM.render(<Weather />, document.getElementById('test'))
+
+		//测试，脚本运行是按顺序的。元素渲染完，才能绑定成功，所以要放在下面
+		// const title = document.getElementById('title');
+		// title.addEventListener('click', () => {
+		// 	alert("id title is click");
+		// })
+
+		//如果上面不写this.changeWeahter，可以找到该函数。
+		//但这里无法拿到state里的数据。因为他是Weather组件外部的函数
+		//React使用Babel，禁止自定义函数的this指向window，因此这里的this是undefined。
+		//所以需要把他放入Weather组件里变成方法，才能使用this
+		// function changeWeather() {
+		// 	console.log('test');
+		// console.log(this.state.isHot);
+		//ps：可以在Weather定义之前先定义一个let that
+		//然后在Weather的构造器里，that = this
+		//可以通过这种方式获得this，仅作为拓展。因为这么写并不合理，只是强行获取了this
+		// console.log(that.state.isHot);
+		// }
+
+		//以下代码是不标准的，因为不应该自己new Weather，只是为了教学，看看this的指向
+		// const w = new Weather();
+		// w.changeWeather();
+
+
+	</script>
+</body>
+
+</html>

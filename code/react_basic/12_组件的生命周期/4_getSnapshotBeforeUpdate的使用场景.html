@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>4_getSnapShotBeforeUpdate的使用场景</title>
+	<style>
+		.list{
+			width: 200px;
+			height: 150px;
+			background-color: skyblue;
+			overflow: auto;
+		}
+		.news{
+			height: 30px;
+		}
+	</style>
+</head>
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+	
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/17.0.1/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/17.0.1/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/17.0.1/babel.min.js"></script>
+
+	<script type="text/babel">
+		//模拟微信，微博等新闻的接收，即最新的新闻在最上面，旧的新闻被向下挤。
+		//当我想看之前的某个新闻时，滑动滚轮到该新闻处，可以停留在这个位置，使用户可以浏览，且新闻继续更新。
+		//可以使用快照来实现。(如果不固定，当你滑到该新闻时，由于新闻更新，又会被往下挤了。)
+		class NewsList extends React.Component{
+
+			state = {newsArr:[]}//新闻的数组
+
+			//每隔一秒钟，生成一个新的新闻
+			componentDidMount(){
+				setInterval(() => {
+					//获取原状态
+					const {newsArr} = this.state
+					//模拟一条新闻
+					const news = '新闻'+ (newsArr.length+1)// +1 避免叫新闻0
+					//更新状态
+					this.setState({newsArr:[news,...newsArr]})//这应该叫扩展运算符。这样做可以把最新的新闻放在数组开头
+					//如果用push的话，最新的新闻会被放在数组末尾
+				}, 1000);
+			}
+
+			/*
+			原理：
+			计算getSnapshotBeforeUpdate时list内容区的高度和componentDidUpdate时list内容区的高度。
+			计算他俩的插值，动态地得出在滚动滚动条时，内容去需要向上/向下移动多少，
+			以便固定住所要查看的新闻，同时新的新闻还可以继续被获取
+			*/
+			//在调用这个钩子的时候，新的新闻还没有放到页面上，此时可以获取当前内容区的高度。
+			getSnapshotBeforeUpdate(){
+				//获取之前内容区的高度
+				return this.refs.list.scrollHeight;//这个快照会传给componentDidUpdate
+			}
+
+			componentDidUpdate(preProps,preState,height){
+				this.refs.list.scrollTop += this.refs.list.scrollHeight - height//这里临时用了字符串形式的refs，因为简单
+				//动态地调整更新之后的内容区需要移动的距离，值为 更新后内容区的高度 += 现在内容区的高度 - 快照里保留的更新之前的高度 （在此案例中，这个差值永远是30，因为每个新闻30px）
+				//因为是持续地有新的新闻，所以是+=，持续的向上增加
+			}
+
+
+			render(){
+				return(
+					<div className="list" ref="list">
+						{
+							this.state.newsArr.map((n,index)=>{
+								return <div key={index} className="news">{n}</div>
+							})
+						}
+					</div>
+						//react的diffing算法要求数组遍历时，里面的每个节点必须拥有一个唯一的key属性，作为虚拟DOM的唯一标识。
+						//这里使用的是index，你也可以用生成随机数的方式或时间戳，但明显索引值更方便
+						//但用索引值在某些情况下可能会出现一些问题，后期会仔细讲会遇到什么问题。
+				)
+			}
+		}
+		ReactDOM.render(<NewsList/>,document.getElementById('test'))
+	</script>
+</body>
+</html>

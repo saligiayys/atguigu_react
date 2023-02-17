@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <style>
+        img{
+            width: 200px;
+            height: 150px;
+        }
+    </style>
+    
+</head>
+<body>
+    <div>
+        <img src="./images/banner-logo.png" alt="">
+        <img src="./images/WeChat_logo.png" alt="">
+    </div>
+
+    <script>
+        console.log("pc端初始包含块为：" + document.documentElement.clientWidth);
+        //PC端的缩放：
+        //放大时，视口变小。元素的css值不变，只是每单位css像素所占的面积变大了
+        //缩小时则相反，视口变大
+
+        //为啥放大时视口变小了？
+        //底层原理是，先缩放视口，然后（瞬间）连视口和页面的内容再重新等比放大充满窗口！！！所以感觉不出来是视口变小了，只感觉图片变大了！
+        //缩小同理，先放大，再整体缩小
+
+        //在pc端onresize监测的是视口的变化，即初始包含块
+        window.onresize = () => {
+            console.log("pc端初始包含块为：" + document.documentElement.clientWidth);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1,minmum-scale=1,user-scalable=no,viewport-fit=cover"> -->
+    <meta name="viewport" content="width=375">
+    <title>viewport适配</title>
+
+    <!-- 
+        设计师可能给两种设计图，以iPhone6为例，375（设备独立像素） 或 750（物理像素）   看到375你也要知道设计师是根据iPhone出的图
+        且，这些值并不是想让你写死的，而是应该按照比例变化，这样在不同的设备上元素的比例才不会错乱
+        案例说明：375的图，容器宽度345，左右15px，上面15px
+
+        首先想到的方式是用百分比，但通过下面的演示发现，无法实现。
+
+        因此出现了viewport适配。之所以出现不同设备上比例错乱的问题，就是因为不同设备的理想视口不一样。
+        因此只需要把meta标签里的width固定成一个值，和设计师的设计稿一样宽，剩下的按照设计稿布局，即可实现所有设备都一样。比如width=375.
+        早期都是这么做的，是曾经的王者。不用复杂的计算，非常简单
+        但之所以现在不再使用，是因为之前说过的，有些安卓手机不支持width写具体的值，兼容性不好，且不能使用完整的meta标签。
+        且一些不希望做适配的东西，比如边框，也被强制做了适配。
+        因为上面说过，容器345，或者边距的15，要在不同设备商按比例显示
+        但边框这个东西，有两种情况，
+        1是可以和宽度一样等比适配。
+        2是必须只能是设计师指定的那个值，比如1px，如果使用这种方式边框就不能保证在不同机型上都是1px了！！
+        也就是有时边框不参与适配，有时参与适配。而用了viewport的方式就成了一棒子打死了，边框永远都会强制参与适配
+
+    -->
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        html,body{
+            height: 100%;
+            width: 100%;
+        }
+
+        /* 1. 使用百分比的方式：行不通 */
+            /* 
+            width: 345px; 
+            345/375 = 92%  
+                  
+            heigth:150px
+            150/375=40%   不用是150/高度，因为高度是无底洞，设计师的标尺是375，所以是150/375
+            但是问题是代码里高度的40%看的并不是横向的375，而是body的高度，结果并不是150（iPhone6）
+            或者如果一个父元素套一个子元素，子元素的百分比是按照父元素来的，也不是按照设计图
+            因此适配完全写百分比是不行的！
+            */
+        /* #demo{
+            width: 92%;     
+            height: 40%;
+            background-color: skyblue;
+            margin: 0 auto;
+            margin-top: 15px;
+        } */
+
+        /* 2. Viewport适配的方式, <meta name="viewport" content="width=375"> */
+        #demo{
+            width: 345px;     
+            height: 150px;
+            background-color: skyblue;
+            margin: 0 auto;
+            margin-top: 15px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="demo"></div>
+    <script>
+        console.log("布局视口：" + document.documentElement.clientWidth);
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端事件</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        #demo{
+            width: 100%;
+            height: 300px;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        pc端分的事件可以分成两大种：键盘，鼠标
+        
+
+        因为早期的时候，移动端是和pc端共用同一个网页的，因此移动端也能触发click事件
+
+    -->
+
+    <div id="demo"></div>
+
+    <script>
+        const demo =document.getElementById('demo');
+        //因为早期的时候，移动端是和pc端共用同一个网页的，因此移动端也能触发click事件
+        // demo.addEventListener('click',() => {
+        //     alert("你点我了！");
+        // })
+        
+        //但是pc端不兼容移动端的这四个事件，是移动端独有的。但移动端兼容pc端里所有的事件。
+        demo.addEventListener('touchstart',() => {
+            console.log("你开始摸我了");
+        })
+
+        demo.addEventListener('touchmove',() => {
+            console.log("你在我身上移动呢");
+            //只要摸的时候是在demo范围里，就算不松开手指移出了demo也依然持续触发这个事件！
+            //相当于pc的拖拽功能
+        })
+
+        demo.addEventListener('touchend',() => {
+            console.log("你抬起手指了");
+            // 同理，按住手指移出了demo松开手指，也会触发该事件。
+            // 这个就是这么设计的。。。不然其实会怪怪的，平时使用也已经习惯了。
+        })
+
+        demo.addEventListener('touchcancel',() => {
+            console.log("你触摸的时候被打断了");
+        })
+
+        setTimeout(() => {
+            alert("打断触摸！")
+        }, 3000);
+    </script>
+</body>
+</html>

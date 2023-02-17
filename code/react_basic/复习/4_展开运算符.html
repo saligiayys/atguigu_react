@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Document</title>
+	</head>
+	<body>
+		<script type="text/javascript" >
+			//在数组中使用
+			let arr1 = [1,3,5,7,9]
+			let arr2 = [2,4,6,8,10]
+			console.log(arr1);// [1, 3, 5, 7, 9]	输出一个，是一个数组
+			console.log(...arr1); //展开一个数组 1 3 5 7 9  是分别输出
+			let arr3 = [...arr1,...arr2]//连接数组
+			console.log(arr3);//[1, 3, 5, 7, 9, 2, 4, 6, 8, 10]
+			
+			//在函数中使用
+			function sum(...numbers){  //相当于可变形参
+				//形参...numbers
+				// console.log(numbers);//结果是形参组成的数组
+				//计算一个数组里所有元素的和。面试题
+				//使用数组的reduce方法。参数是一个函数，该函数的第一个参数是之前的值，第二个参数是当前的值。
+				return numbers.reduce((preValue,currentValue)=>{
+					return preValue + currentValue
+				})
+				//数组的方法很重要，要复习！
+			}
+
+			console.log(sum(1,2,3,4));
+
+			//在对象里使用：
+
+			//构造字面量对象时使用展开语法
+			let person = {name:'tom',age:18}
+			//复制一个对象
+			//错误的：是把person的地址值给了person2，person改person2也跟着改
+			// let person2 = person;
+
+			//正确的: 除了这里推荐的方式，之前的方式还有深拷贝和浅拷贝
+			let person2 = {...person}//es新语法，复制对象，必须用{}，以字面量的形式，复制一个对象
+			//console.log(...person); //报错，展开运算符不能展开对象，因为对象类型没有iterator接口
+			//简单点说，不能用()，但可以用{}
+			//这称为：构造字面量对象时使用的展开语法。（弹幕：不算深拷贝，只拷贝了一层）
+			person.name = 'jerry'
+			console.log(person2);//依然是tom
+			console.log(person);
+
+			//合并。其实就是修改。只是如果有重名的属性，会把与之合并的相同名字的属性覆盖掉。
+			let person3 = {...person,name:'jack',address:"地球"}
+			console.log(person3);//{name: "jack", age: 18, address: "地球"}
+			
+		</script>
+	</body>
+</html>

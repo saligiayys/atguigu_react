@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>2_使用js创建虚拟DOM</title>
+</head>
+<body>
+<!---使用js创建虚拟DOM(一般不推荐)-->
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!--用js创建虚拟DOM不需要引入babel。因为不用翻译了-->
+	<!--script标签里也是用原始的javascript-->
+	<script type="text/javascript" >
+		//需求：创建<h1 id="title"><span>Hello,React</span></h1>
+		//通过比较，使用jsx比原生js简单太多。如同直接写html一样
+		//但其实原理是，使用jsx依赖babel翻译。翻译的结果就是下面的代码。但好处是不需要我们来写。
+
+		//1.创建虚拟DOM	document.createElement创建的是真实DOM
+		//参数1：标签名；参数2：标签属性(对象的形式)；参数3：标签内容
+		//使用全局的React对象创建
+		const VDOM = React.createElement('h1',{id:'title'},React.createElement('span',{},'Hello,React'))
+		//2.渲染虚拟DOM到页面
+		ReactDOM.render(VDOM,document.getElementById('test'))
+	</script>
+</body>
+</html>

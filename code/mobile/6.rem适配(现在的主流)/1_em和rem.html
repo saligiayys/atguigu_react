@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回顾em和rem</title>
+    <style>
+
+        html,body{
+            font-size: 20px;
+        }
+
+        #demo1{
+            width: 400px;
+            height: 400px;
+            background-color: skyblue;
+            font-size: 40px;
+        }
+        #demo2{
+            /* width:200px; */
+            width: 5em;
+            /* height: 200px; */
+            height: 10rem;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        回顾em和rem
+        1.em:是参考自己父级元素的字体大小计算出来的。比如父级元素：font-size:40px  子元素：width:5em 相当于5 * 40 = 200px
+        2.rem:不参考自己的父级元素，而是参考根标签html：比如html:font-size:20px   子元素：width:10rem 相当于10 * 20 = 200px
+    -->
+    <div id="demo1">
+        <div id="demo2"></div>
+    </div>
+</body>
+</html>

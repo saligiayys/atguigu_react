@@ -1,0 +1,18 @@
+@font:100rem;
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+#demo{
+    width: (345/@font);
+    height: (150/@font);
+    margin: 0 auto;
+    margin-top: (15/@font);
+    background-color: skyblue;
+    /* 边框参与适配 */
+    border: (1/@font) solid black;
+    /* 边框不参与适配 */
+    // border: 1px solid black;
+}

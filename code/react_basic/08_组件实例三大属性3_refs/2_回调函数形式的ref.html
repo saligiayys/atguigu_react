@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>1_字符串形式的ref</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//创建组件
+		class Demo extends React.Component {
+			//展示左侧输入框的数据
+			showData = () => {
+				const { input1 } = this //因为下面this.input1 = c，已经把这个节点作为属性添加到实例对象上了，不需要再从refs上取。
+				// 可以直接从this取。实例对象也是对象，当然可以解构赋值！
+				alert(input1.value)
+				console.log(this);
+			}
+			//展示右侧输入框的数据
+			showData2 = () => {
+				const { input2 } = this//同上
+				alert(input2.value)
+			}
+			render() {
+				// return <input ref={(a) => {console.log(a)} } type="text" placeholder="点击按钮提示数据"/>;
+				//首先这个是回调函数，因为是你定义的，你没有调用，最后是由react调用的。React会把当前这个ref所在的节点作为参数传入到函数里
+				//输出的是：<input type="text" placeholder="点击按钮提示数据">，证明传入这个函数的参数a就是ref所处的这个input节点
+				//注意，只有ref属性绑定的回调函数，react才会自动帮你调用，因为这是底层设计好的，你写别的名字，react找不到。
+				//实际开发我们一般这么写
+				// return <input ref={(currentNode) => {this.input1 = currentNode} } type="text" placeholder="点击按钮提示数据"/>;
+				//意思是，调用这个函数的时候，把当前所处的这个节点作为currentNode传入，然后把这个节点作为属性放在组件实例自身上，名字叫input1
+				//因为使用了箭头函数，这里的this就是组件的实例对象。
+				//也可以起名叫current或者c
+				//然后根据箭头函数的省略规则，最后可以写成
+				return (
+					<div>
+						<input ref={c => this.input1 = c} type="text" placeholder="点击按钮提示数据" />
+						<button onClick={this.showData}>点我提示左侧的数据</button>
+						<input onBlur={this.showData2} ref={c => this.input2 = c} type="text" placeholder="失去焦点提示数据" />&nbsp;
+					</div>
+				)
+			}
+		}
+		//渲染组件到页面
+		ReactDOM.render(<Demo a="1" b="2" />, document.getElementById('test'))
+	</script>
+</body>
+
+</html>

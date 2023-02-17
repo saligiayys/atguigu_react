@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+    <!-- 
+        一句话总结：
+            图片的高清显示就是不要浪费灯泡，一个灯泡还原一个位图像素格子。
+    -->
+
+<style>
+    .test{
+        height: 200px;
+        width: 200px;
+        background-color: red;
+    }
+
+    .logo{
+        height: 200px;
+        width: 200px;
+    }
+
+    /* webkit内核的浏览器要加上-webkit，微软浏览器要加上-ms */
+    @media screen and (-webkit-min-device-pixel-ratio:2) {
+        .test{
+            background-color: green;
+        }
+
+        .logo{
+            content: url("./images/WeChat_logo.png");
+        }
+        /* content代表标签体内容 */
+        /* src属性对应的就是url */
+        /* dpr为2的时候显示微信logo，否则显示不二社logo */
+    } 
+
+    /* 注意媒体查询的顺序要注意！！如果把dpr为3的写在2的上面，会应用dpr为2的配置。不是匹配上了就结束，不会break，会一直向下走！*/
+    /* 如果是max就3上2下，min就是2上3下 */
+    @media screen and (-webkit-min-device-pixel-ratio:3) {
+        .test{
+            background-color: green;
+        }
+
+        .logo{
+            content: url("./images/WeChat_logo.png");
+        }
+    } 
+
+    /* 实际开发只有logo可能用到媒体查询。且src里放的是一个动态的服务器返回的地址
+        且现在logo一般使用SVG格式，即矢量图。因此也就不用媒体查询了
+    */
+
+</style>
+
+<script>
+    alert(window.devicePixelRatio)
+</script>
+
+<body>
+    <div class="test"></div>
+    <img class="logo" src="./images/banner-logo.png" alt="">
+</body>
+</html>

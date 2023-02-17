@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1物理像素边框</title>
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        #demo{
+            width: 3.45rem;
+            height: 1.5rem;
+            background-color: pink;
+            margin: 0 auto;
+            margin-top: 0.15rem;
+            /* 边框不参与适配 */
+            border: 1px solid black;
+        }
+
+        @media screen and (-webkit-min-device-pixel-ratio:2){
+            #demo{
+                border: 0.5px solid black;
+            }            
+        }
+
+        @media screen and (-webkit-min-device-pixel-ratio:3){
+            #demo{
+                border: 0.333px solid black;
+            }      
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        1物理像素边框
+        之前说过，边框可能参与适配，也可能不参与适配。
+        参与适配，表示边框是设计的一部分。
+        不参与适配，则表示边框仅仅是起分隔的作用。
+
+        1物理像素边框，是在边框不参与适配的情况下提出的。
+        例如：1px的边框 
+
+        iPhone 4        iPhone 6        iPhone6
+        css ：1px       css : 1px       css : ? 答案为0.5px
+        dpr = 1         dpr = 2         dpr = 2
+        物理 : 1px      物理 ：2px      物理 ：1px
+
+        iPhone4的dpr为1，也就是点亮大小为1px的一排小灯泡
+        iPhone6的dpr为2，也就是点亮大小为2px的一排小灯泡
+
+        也就是说，既然边框仅仅起到分隔作用，那我们其实不需要物理像素在iPhone6上点亮2px，没有必要浪费
+        因此，反向推导，我们希望物理像素在iPhone6上只点亮1px，则程序员实际编码的css是0.5px
+
+        但这个概念也就是在dpr = 2的手机刚问世那会追求过，现在也慢慢不再关注了。
+        因为加入是dpr为4的手机，1物理像素边框，真的不容易看出来。
+        现在基本不使用了，很多公司在移动端都避开边框，比如淘宝，京东
+     -->
+
+     <div id="demo"></div>
+
+     <script>
+        function adapter() {
+            const dipWidth = document.documentElement.clientWidth;
+            const rootFontSize = (dipWidth * 100) / 375;
+            document.documentElement.style.fontSize = rootFontSize + "px";
+        }
+
+        adapter();
+
+        window.onresize = adapter;
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- %PUBLIC_URL%代表public文件夹的路径 -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <!-- 开启理想视口，用于做移动端网页的适配 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 用于配置浏览器页签+地址栏的颜色(仅支持安卓手机浏览器，但有兼容问题，也只有个别安卓手机有效，所以很少用) -->
+    <meta name="theme-color" content="red" />
+    <!-- 用于网站描述， SEO-->
+    <meta 
+      name="description"
+      content="Web site created using create-react-app"
+		/>
+		<!-- 用于指定网页添加到手机主屏幕后的图标，只支持苹果手机。 -->
+		<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+		<!--
+		    应用加壳时的配置文件
+		    比如给一个网页加上一层android的壳，就变成了一个.apk的安卓应用，实际就是一个壳子里内嵌了一个网页。
+        也就是说你不会java/swift也可以做一些简单的安卓/ios应用
+            对于简单的应用这么做可以节省成本。而manifest.json就是用来配置一些图标，名字，以及访问设备权限的设置。
+            ps:react提供的配置远远不够，如果需要加壳技术，需要自己进一步了解
+        这里的manifest.json文件用来配置应用加壳app的名字和图标
+        实际的配置比这里多得多，比如是否混入百度地图api等等
+        -->
+		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>React App</title>
+  </head>
+  <body>
+		<!-- 
+      若你的浏览器不支持js则展示标签中的内容。支持js的浏览器则不会展示该内容
+      （这年头不支持js的浏览器基本都下架了）
+      如何让浏览器不支持js运行？
+      Chrome：设置-》隐私和安全-》网站设置-》Javascript-》禁用
+     -->
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+        <!--所有组件都放在这个容器里，最重要的。相当于之前基础里的<div id="test"></div>-->
+    <div id="root"></div>
+        <!--因为ReactDOM.render()不是追加动作，后面的会把之前的覆盖掉。所以root里只放一个组件，app.js。
+            因此使用脚手架进行开发时，ReactDOM.render()只会调用一次。其他你自己定义的组件放在app.js里，作为app.js的子组件-->
+
+        <!--
+        补充，public下还有一个robots.txt文件，它是爬虫规则文件。
+        规定什么内容可以爬取，什么不能。（面向监狱编程）
+        -->
+  </body>
+</html>

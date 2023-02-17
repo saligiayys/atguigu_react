@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>1_类的基本知识</title>
+</head>
+
+<body>
+	<script type="text/javascript">
+		/* 
+			总结：
+				1.类中的构造器不是必须要写的（但这样类就没啥意义了），要对实例进行一些初始化的操作，如添加/修改指定属性时才写。
+				2.如果A类继承了B类，且A类中写了构造器(目的是添加自己独有的属性)，那么A类构造器中必须调用super，且必须放在第一行。
+					如果A和B的属性一样，可以不写构造器，因为会默认调用B的构造器，也就是有一个隐藏的super()
+				3.类中所定义的方法，都放在了类的原型对象上，供实例去使用。
+		*/
+		//创建一个Person类
+		class Person {
+			//构造器方法，用来接收new Person()的参数
+			constructor(name, age) {
+				//构造器中的this是谁？——> 类的实例对象
+				this.name = name
+				this.age = age
+			}
+			//一般方法(除了构造器方法以外，根据业务需要写的方法)
+			speak() {
+				//speak方法放在了哪里？——> 类的原型对象上，供实例使用
+				//通过Person实例调用speak时，speak中的this就是Person实例
+				console.log(`我叫${this.name}，我年龄是${this.age}`);
+			}
+		}
+
+		//创建一个Person类的实例对象
+		//控制台输出:Person{...} {}才是实例对象，Person代表该实例对象是由Person类new出来的
+		const p1 = new Person("Tom", 18);
+		const p2 = new Person("Jerry", 19);
+
+		console.log(p1);
+		console.log(p2);
+		p1.speak();
+		p2.speak();
+		p1.speak.call({ a: 1, b: 2 });//我叫undefined，我年龄是undefined
+		//因此，注意不能说speak中的this就是Person实例。上一行代码就通过call改变了this的指向，不是p1
+
+		//创建一个Student类，继承于Person类
+		class Student extends Person {
+			constructor(name, age, grade) {
+				super(name, age)
+				this.grade = grade
+				this.school = '尚硅谷'//这个是写死了，表示所有Student的实例都是尚硅谷学校的，因此不需要接收参数
+			}
+			//重写从父类继承过来的方法
+			speak() {
+				console.log(`我叫${this.name}，我年龄是${this.age},我读的是${this.grade}年级`);
+				this.study()
+				// super.speak();
+			}
+			study() {
+				//study方法放在了哪里？——类的原型对象上，供实例使用
+				//通过Student实例调用study时，study中的this就是Student实例
+				console.log('我很努力的学习');
+			}
+		}
+
+		const s1 = new Student("小张", 15, "高一");
+		console.log(s1);
+		s1.speak();
+
+		console.log("/////////////");
+
+		//讲state的简写方式时的补充：
+		class Car {
+			constructor(name, price) {
+				this.name = name
+				this.price = price
+				// this.wheel = 4
+				//如果想定义每辆车都有4个轮子，则可以写死，不需要传参
+				//因此，没有必要往构造器里写，直接作为属性，和java一样
+			}
+			//类中可以直接写赋值语句,如下代码的含义是：给Car的实例对象添加一个属性，名为a，值为1
+			//和java一样，js学多了都忘了。java里不是经常写 public name; public name = "Tom"么！
+			//当然，如果你初始化的值是从外部传来的，还是要用构造器接收
+			a = 1;
+			wheel = 4;
+
+			//补充：props简写相关
+			//上面是给类的实例添加属性
+			//使用static则是给类本身添加属性，是静态属性
+			//为什么加给类而不是实例？
+			//因为添加校验规则propType时，React是从类自身上找的，而不是实例身上。
+			static demo = 100
+
+			run() {
+				console.log("车能开," + this.name);
+			}
+
+			//没有语法可以直接把箭头函数放在原型上，必须要赋值，放在实例自身上
+			//错误的
+			// test () => {
+			// 	console.log('test');
+			// }
+			//正确的
+			test = () => {
+				console.log('test');
+			}
+		}
+		const c1 = new Car('奔驰c63', 199)
+		console.log(c1);
+		console.log(Car.demo);
+		c1.run()
+		c1.test();
+	</script>
+</body>
+
+</html>

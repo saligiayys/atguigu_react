@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>3_react生命周期(新)</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/17.0.1/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/17.0.1/react-dom.development.js"></script>
+
+	<!-- 注意这里用的已经是React17，旧的生命周期过期了。 -->
+
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/17.0.1/babel.min.js"></script>
+
+	<script type="text/babel">
+		//创建组件
+		class Count extends React.Component {
+			//首先，17.0版本中，个别生命周期函数已经过时了，但依然可以使用，只是会保持警告。
+			//可以给这些过时的生命周期函数前加上	UNSAVE_函数名 来取消警告，例如：UNSAVE_componentWillMount
+			//但未来的18.0版本，必须使用UNSAVE_函数名的方式使用过时的生命周期函数！
+			//一共有三个过时的生命周期函数：componentWillMount,componentWillReceiveProps,componentWillUpdate
+			//也就是所有带 Will 的，除了componentWillUnmount
+
+			//面试：新的生命周期和旧的有什么区别？
+			//新的生命周期和旧的相比，(即将)废弃了三个钩子，分别是componentWillMount,componentWillReceiveProps,componentWillUpdate。
+			//同时提出了两个新的钩子，分别是：getDerivedStateFromProps 和 getSnapshotBeforeUpdate。
+			//但注意，新的钩子的作用和旧的钩子的作用是不一样的！不然为啥要改名呢？
+
+			//ps：官方文档指出，这两个新的钩子，在实际开发中及其罕见。所以就算你不知道，几乎不会有任何影响。
+			//所以常用的还是那三个：componentDidMount, componentWillUnmount 和 render
+
+			/* 
+				1. 初始化阶段: 由ReactDOM.render()触发---初次渲染
+								1.	constructor()
+								2.	getDerivedStateFromProps 
+								3.	render() =====> 必须使用的一个
+								4.	componentDidMount() =====> 常用
+											一般在这个钩子中做一些初始化的事，例如：开启定时器、发送网络请求(ajax)、订阅消息
+				2. 更新阶段: 由组件内部this.setSate()或父组件重新render触发
+								1.	getDerivedStateFromProps
+								2.	shouldComponentUpdate()
+								3.	render()
+								4.	getSnapshotBeforeUpdate
+								5.	componentDidUpdate()
+				3. 卸载组件: 由ReactDOM.unmountComponentAtNode()触发
+								1.	componentWillUnmount()  =====> 常用
+											一般在这个钩子中做一些收尾的事，例如：关闭定时器、取消订阅消息
+			*/
+			//构造器
+			constructor(props) {
+				console.log('Count---constructor');
+				super(props)
+				//初始化状态
+				this.state = { count: 0 }
+			}
+
+			//加1按钮的回调
+			add = () => {
+				//获取原状态
+				const { count } = this.state
+				//更新状态
+				this.setState({ count: count + 1 })
+			}
+
+			//卸载组件按钮的回调
+			death = () => {
+				ReactDOM.unmountComponentAtNode(document.getElementById('test'))
+			}
+
+			//强制更新按钮的回调
+			force = () => {
+				this.forceUpdate()
+			}
+
+			//使用场景极其罕见，且会造成代码冗余，了解即可
+			// 使用场景：如果state完全取决于外面的props，可以使用这个钩子。
+			//getDerivedStateFromProps 直接翻译为：从Props得到一个派生的State。
+			//该生命周期函数不是给组件实例调用的，而是给组件类调用的，因此必须使用static关键字，且必须返回一个state对象，或null，否则报错
+			//该函数可以收到两个参数，第一个参数就是props，第二个是state。
+			//如果你需要state的值在任何时候都取决于props，那么可以使用getDerivedStateFromProps(注意是可以，不是必须，我们可以使用构造器，因为构造器也能收到props，然后放到初始化的state里 ) 
+			//使用getDerivedStateFromProps，无论怎么修改上面构造器里的的state，值都是props
+			//因为，根据3_react生命周期(新).png显示，getDerivedStateFromProps横跨挂载和更新，有它拦着，所有state都要根据props
+			static getDerivedStateFromProps(props, state) {//该函数可以收到两个参数，第一个参数就是props，第二个是state。
+				console.log('getDerivedStateFromProps', props, state);
+				return null		//返回一个state对象，或null，因为getDerivedStateFromProps意思就是得到一个衍生的状态。
+				// return {count:108}  //这样108永远固定，无法+1，即状态被锁死了（刚看完三体~）
+				//如果这里的state对象里的key，比如count，在初识状态里也有，则不再以初始化的那个count为主了。且以后也改不了。
+				// return props  //在下面给Count组件传入count:199。注意要和初始化state里的key值对应。
+				//结果永远是props的值，所以叫派生
+				//可能的用法，对props和state做判断，比如奇数以props为主，偶数以state为主等
+			}
+
+			//在更新之前获取快照 此钩子也不常见，但比getDerivedStateFromProps稍微用的多一些
+			//要求必须返回一个快照值(snapshot value)或null。任何值都可以作为快照值
+			//它可以在最近一次渲染输出（提交到 DOM 节点）之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。
+			//此生命周期方法的任何返回值将作为参数传递给 componentDidUpdate()。
+			//根据原理图，因为componentDidUpdate在getSnapshotBeforeUpdate的下方，所以快照值传给了componentDidUpdate。
+			//常见的快照值，比如：更新之前浏览器视口的宽度，某个元素的高度等。类似一种备份的效果
+			getSnapshotBeforeUpdate() {
+				console.log('getSnapshotBeforeUpdate');
+				return 'atguigu'
+			}
+
+			//组件挂载完毕的钩子
+			componentDidMount() {
+				console.log('Count---componentDidMount');
+			}
+
+			//组件将要卸载的钩子
+			componentWillUnmount() {
+				console.log('Count---componentWillUnmount');
+			}
+
+			//控制组件更新的“阀门”
+			shouldComponentUpdate() {
+				console.log('Count---shouldComponentUpdate');
+				return true
+			}
+
+			//组件更新完毕的钩子
+			//补充：其实该钩子默认会传入两个参数，分别是prevProps和prevState，即此次更新前一次的props和state值
+			//此外，还可以传入第三个参数，用来接收getSnapshotBeforeUpdate返回的值，snapshotValue
+			componentDidUpdate(prevProps, prevState, snapshotValue) {
+				console.log('Count---componentDidUpdate', prevProps, prevState, snapshotValue);
+			}
+
+			render() {
+				console.log('Count---render');
+				const { count } = this.state
+				return (
+					<div>
+						<h2>当前求和为：{count}</h2>
+						<button onClick={this.add}>点我+1</button>
+						<button onClick={this.death}>卸载组件</button>
+						<button onClick={this.force}>不更改任何状态中的数据，强制更新一下</button>
+					</div>
+				)
+			}
+		}
+
+		//渲染组件
+		ReactDOM.render(<Count count={199} />, document.getElementById('test'))
+	</script>
+</body>
+
+</html>

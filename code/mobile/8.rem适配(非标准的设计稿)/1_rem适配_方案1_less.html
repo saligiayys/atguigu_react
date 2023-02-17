@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1,minmum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>rem适配_方案1_less</title>
+    <link rel="stylesheet" href="./css1/index.css">
+</head>
+<body>
+    <div id="demo"></div>
+    <script>
+
+        // 如果既不是375的图也不是750的图，而是非标准图，比如800
+        //也只需把数值改成图上的值即可，less里也一样。因为公式是通用的
+        // 所以无论是什么设计稿，直接带入公式即可。（方案1和方案2看你喜欢）
+        function adapter() {
+            const dipWidth = document.documentElement.clientWidth;
+            const rootFontSize = (dipWidth * 100) /800;
+            document.documentElement.style.fontSize = rootFontSize + "px";
+        }
+
+        adapter();
+
+        window.onresize = adapter;
+
+    </script>
+</body>
+</html>

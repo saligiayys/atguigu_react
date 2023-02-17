@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>touch和click</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        #demo{
+            width: 100%;
+            height: 300px;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        pc端分的事件可以分成两大种：键盘，鼠标
+        
+
+        因为早期的时候，移动端是和pc端共用同一个网页的，因此移动端也能触发click事件
+
+    -->
+
+    <div id="demo"></div>
+
+    <script>
+        const demo =document.getElementById('demo');
+
+        let time;
+
+        demo.addEventListener('click', () => {
+            console.log("click所指定的回调被执行了", Date.now() - time);
+        })
+
+        demo.addEventListener('touchstart',() => {
+            time = Date.now();
+            console.log("touchstart所指定的回调被执行了");
+        })
+
+        //发现，即使click事件是先声明的，touchstart也会在click之前被执行。因为在移动端，touchstart是独有的
+
+        //如果一个元素同时绑定了click和touchstart，一定先触发touchstart。
+        //且触发完touchstart后会间隔一段时间才触发click。
+        //如果开启了理想视口，这个时间间隔平局为50-60毫秒左右，具体也要看设备性能
+        //如果没有开启理想四口，该间隔平均为300毫秒左右
+        //这就是为什么移动端不使用click的原因，click反应不如touchstart快。在不用理想视口的情况下，用户会明显感觉到卡顿
+        //且，不要以为不用touchstart，click就会变快，click本身在移动端上就是慢的！
+        //其实这是因为，touch事件结束后，会默认触发click事件。
+        //若元素没有绑定click事件(没有为click绑定回调)，则触发完touch事件后结束。
+        //（但其实也触发了click，但是click没有回调，有点类似事件的冒泡）
+
+        // setTimeout(() => {
+        //     alert("打断触摸！")
+        // }, 3000);
+    </script>
+</body>
+</html>

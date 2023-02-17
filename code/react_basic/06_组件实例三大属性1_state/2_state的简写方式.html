@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>state简写方式</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//实际开发中写的都是简写
+
+		//1.创建组件
+		class Weather extends React.Component {
+			//省略1：省略掉构造器
+			//初始化状态。和java一样。这样写可以不用写构造器。但如果在new的时候需要传入参数，则依然需要构造器。但明显state不用传参数
+			//原理：看类的基本知识里的补充内容。相当于往Weather的实例对象身上追加了一个state属性值为一个对象，和a=1一个道理
+			state = { isHot: false, wind: '微风' }
+
+
+			render() {
+				console.log(this);
+				const { isHot, wind } = this.state;
+				return <h1 onClick={this.changeWeather}>今天天气很{isHot ? '炎热' : '凉爽'}，{wind}</h1>
+			}
+
+			//省略2：构造器里的this.changeWeather = this.changeWeather.bind(this) 从而省略掉构造器
+			//之前一再强调，这么写的话，changeWeather()方法是放在原型上的，并且大多时候是作为回调函数调用，也就是直接调用，外加局部严格模式的影响，this不是组件的实例对象，而是undefined
+			// changeWeather() {
+			// 	const isHot = this.state.isHot;
+			// 	this.setState({ isHot: !isHot });
+			// }
+			//但我们可以这么些，和省略1原理一样(看类的基本知识里的补充内容)
+			//这相当于给Weather这个类添加了一个自身的属性，changeWeather = function(){} 就相当于复习里的 a=1
+			//这样changeWeather就再也不在原型上了，而是直接放在了Weather实例对象自己身上
+			// changeWeather = function () {
+			// 	const isHot = this.state.isHot;
+			// 	this.setState({ isHot: !isHot });
+			// }
+			//但这样只是把changeWeather换了个位置，依然会报错，因为该函数依旧被当作回调函数调用直接调用，内部严格模式，依旧是undefined
+			//需要把function换成箭头函数，因为箭头函数没有自己的this
+			//但如果在箭头函数内部使用了this关键字，并不会报错
+			//而是向外层函数继续寻找this来作为自己的this来使用
+			//changeWeather外层，也就是class Weather{}里，当然就是Weather的实例对象了
+
+			//react里的自定义方法————要用赋值语句的形式+箭头函数。	不能写function(){}，因为大多数时候(可以说都是)当作回调函数直接调用的，因为类中所定义的方法，会在局部开启严格模式，this是undefined!!
+			//ps：生命周期函数不是自定义的，因此不用写箭头函数(见12_组件的生命周期)
+			//这样写就不需要在构造器里绑定this了。相当于给实例对象添加一个changeWeather方法，而不是给原型添加。（因为赋值语句是给实例添加属性）
+			//且箭头函数没有自己的this。但如果在箭头函数里使用了this，不会报错，而是会找到它外层函数的this，作为自己的this来使用。
+			//简单说，changeWeather = ()=>{}和state = {}一样，都成为了Weather类的成员属性，通过组件的实例对象，即this来调用。
+			changeWeather = () => {
+				console.log(this);
+				const isHot = this.state.isHot;
+				this.setState({ isHot: !isHot });//这里的this就是Weather组件的实例对象
+			}
+			//这样可以就可以避免在构造器里通过bind来绑定this了。避免如果有很多方法，需要bind好几次的情况。
+		}
+		//2.渲染组件到页面
+		ReactDOM.render(<Weather />, document.getElementById('test'))
+
+	</script>
+</body>
+
+</html>

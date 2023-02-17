@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <style>
+        /* 理想视口/完美视口：与屏幕（设备独立像素）等宽的布局视口，称为理想视口。靠meta标签实现。理想视口是一个标准*/
+
+        /*
+            理想视口是一个标准：
+            本来屏幕的宽度可以有三种形容方式：以iPhone6为例
+                layout = 9.2cm
+                layout = 750px  物理像素
+                layout = 375px  设备独立像素
+
+            因此需要一个标准：最后的标注就是用设备独立像素来衡量理想视口！
+
+            有了理想视口，不需要从布局视口进行压缩了，而是布局视口本身就和设备的独立像素一样大，用户不需要缩放。
+
+            但这样就无法接受pc端的页面了，但当今年代，我们也早已不单纯仅仅为pc端设计网页里了，而是移动，pc端单独设计，或者使用响应式！
+
+            一般大公司都会为移动端单独设计网页，比如京东 pc端：jd.com   移动端: m.jd.com   m代表mobile
+
+            网页代码会使用js判断， 例如dpr信息来看当前设备是移动端还是pc端，然后进行重定向，跳转到合适的网页
+
+            至此980px的时代落幕了。现在也不用再特别考虑物理像素和设备独立像素，以及像素比。只需考虑css像素即可
+
+            最后要记住的，只有后面讲的那12行代码来对移动端进行适配，以及meta标签开启理想视口
+
+            但理想视口也有一些问题：
+            1.在不同尺寸设备上显式会不成比例(比如iPhone6plus上会多出一个空白)---解决办法：适配
+            2.pc页面无法承接---解决办法：单独为移动端设计一个网页
+
+        */
+
+        *{
+            margin:0;
+            padding: 0;
+        }
+
+        #demo{
+            width: 200px;
+            height: 200px;
+            background-color: skyblue;
+        }
+    </style>
+
+    <!-- 使用meta标签来开启理想视口 -->
+    <!-- device-width拿到设备独立像素 -->
+    <!-- width代表布局视口的宽度，因此width=device-width意思就是把设备独立像素赋值给布局视口，即开启了理想视口 -->
+    <meta name="viewport" content="width=device-width"> 
+    <!-- 如果发现切换开启理想视口没有变化，要先切换回pc端，然后再切换回移动端 -->
+
+</head>
+<body>
+    <div id="demo">测试大小</div>
+    <script>
+        console.log("该设备的布局视口宽度为：",document.documentElement.clientWidth);
+        console.log("该设备的视觉视口宽度为：",window.innerWidth);
+        // 以iPhone6为例，使用meta标签之前都是980，使用meta标签后是375，即开启了理想视口
+
+        const demo = document.getElementById("demo");
+        demo.innerHTML = "该设备的布局视口宽度为：" + document.documentElement.clientWidth + "<br/>";
+        demo.innerHTML += "该设备的视觉视口宽度为：" + window.innerWidth;
+    </script>
+</body>
+</html>

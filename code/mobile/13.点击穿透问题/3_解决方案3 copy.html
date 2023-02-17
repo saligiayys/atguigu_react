@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解决方案3</title>
+
+    <!-- 
+
+        解决方案3：
+            让背后的元素暂时失去click事件，300毫秒左右后复原
+
+            使用给a标签加上css属性pointer-events:none，使得该元素不能响应任何事件
+            该属性是一个比较旧的属性。
+
+            然后正在touch事件触发的回调函数里重新设置pointer-events:auto
+            但是不能马上设置，因为之前说过，touch事件和click时间之间存在300毫秒的间隔(不使用理想视口)
+            因此需要使用一个延时器，300毫秒后复原！
+
+     -->
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+
+        #wraper{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* background-color: pink; */
+        }
+
+        #baidu{
+            display: block;
+            width: 100%;
+            height: 200px;
+            background-color: orange;
+
+            /* 解决方案3 */
+            pointer-events: none;
+        }
+
+        #shade{
+            /* 参考wraper定位 */
+            position:absolute;
+            top: 0;
+            left: 0;
+
+            text-align: center;
+
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        h1{
+            /* 后面没有a标签 */
+            /* margin-top: 240px; */
+
+            /* 后面有a标签 */
+            margin-top: 100px;
+            color:white;
+        }
+
+        button{
+            width: 100px;
+            height: 30px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div id="wraper">
+        <a id="baidu" href="https:www.baidu.com">点我去百度</a>
+        <div id="shade">
+            <h1>恭喜一等奖！</h1>
+            <button id="btn">确认</button>
+        </div>
+    </div>
+    <script>
+        const btn = document.getElementById('btn');
+        const shade = document.getElementById('shade');
+        const baidu = document.getElementById('baidu');
+
+        btn.addEventListener('touchend',() => {
+            shade.style.display = 'none';
+            setTimeout(() => {
+                baidu.style.pointerEvents = 'auto';
+            }, 300);
+        })
+    </script>
+</body>
+</html>

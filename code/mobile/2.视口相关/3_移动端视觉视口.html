@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <style>
+
+        /* 视觉视口:visual viewport。
+        屏幕多宽，它就多宽。也是980像素，但此980非彼980，它是变化的，是经过压缩的
+        一般手机是980，ipad pro是1024
+         */
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        #demo{
+            background-color: green;
+            width: 980px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="demo"></div>
+    <script>
+        const demo = document.getElementById('demo');  
+        demo.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth + '<br/>';
+        demo.innerHTML += '您设备的视觉视口宽度：' + window.innerWidth;
+        //屏幕多宽，视觉视口就多宽，但我们不用厘米这种绝对单位来度量
+        //因为980布局视口要压缩成和屏幕一样宽，因此视觉视口也是980，默认是相等的
+        //但是css像素是一个抽象的单位。而生活中的米，厘米是一个绝对的单位。虽然布局视口是980，视觉视口也是980
+        //但布局视口的一个像素要比视觉视口的一个像素大！是经过等比压缩的
+        //所以编码的时候很少用window.innerWidth去获取视觉视口
+        // 同理，移动端和pc端名字一样，都是window.innerWidth，但不是一个东西！！
+
+         //但有可能浏览器的浏览器有问题，老师的iPhone6/7/8就是981
+
+        /*
+            因此以iPhone6为例：
+            物理像素：750px
+            设备独立像素：350px
+            css像素：980px
+        */
+    </script>
+</body>
+</html>

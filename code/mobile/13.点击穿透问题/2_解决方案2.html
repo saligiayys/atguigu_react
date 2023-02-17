@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解决方案2</title>
+
+    <!-- 
+
+        解决方案2：
+            使背后的元素不具备click特性，用touchXxx事件代替clcik
+            不再使用a标签，而是换成div，给div绑定一个touch事件
+            然后通过window.location.href设置跳转即可
+     -->
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+
+        #wraper{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* background-color: pink; */
+        }
+
+        #baidu{
+            display: block;
+            width: 100%;
+            height: 200px;
+            background-color: orange;
+        }
+
+        #shade{
+            /* 参考wraper定位 */
+            position:absolute;
+            top: 0;
+            left: 0;
+
+            text-align: center;
+
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        h1{
+            /* 后面没有a标签 */
+            /* margin-top: 240px; */
+
+            /* 后面有a标签 */
+            margin-top: 100px;
+            color:white;
+        }
+
+        button{
+            width: 100px;
+            height: 30px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div id="wraper">
+        <div id="baidu" >点我去百度</div>
+        <div id="shade">
+            <h1>恭喜一等奖！</h1>
+            <button id="btn">确认</button>
+        </div>
+    </div>
+    <script>
+        const btn = document.getElementById('btn');
+        const shade = document.getElementById('shade');
+        const baidu = document.getElementById('baidu');
+
+        btn.addEventListener('touchend',() => {
+            shade.style.display = 'none';
+        })
+
+        baidu.addEventListener('touchend',() => {
+            // window的跳转方式
+            window.location.href = 'https://www.baidu.com';
+        })
+
+
+    </script>
+</body>
+</html>

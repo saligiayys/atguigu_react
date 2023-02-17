@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>hello_react</title>
+</head>
+<body>
+
+	<!-- 
+		补充：JQery和React还有什么区别？
+			JQuery只是减少了代码量，但浏览器的工作量和以前一样，依然是和真是DOM交互
+			React是和虚拟DOM交互再通过Diffing算法，判断哪些真实DOM改变了，采取刷新对应的DOM，而不是每次都整体刷新。不仅减少了代码量，还减少了浏览器重绘重排的次数，提高了性能。
+
+			JS的模块化只是拆分了JS代码
+			React组件化拆分了HTML,CSS和JS，以及图片，音视频，字体等 
+
+			命令式编码：
+			let d = document.getElementById('test');
+			d.style.display = 'none';
+
+			声明式编码：
+			告诉React这个div应该是蓝色，React就帮你把它变成蓝色
+
+			React Native：前端人员可以使用js去编写安卓和ios应用（底层其实是最后把js代码转换成了java/ios，类似react用Babel把jsx转换成原生js）
+	
+	-->
+
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!--按顺序引入-->
+	<!-- 引入react核心库，全局便有了React对象。（以前学jquery，便有了jquery对象或 $） -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，全局便有了ReactDOM对象，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel" > // 此处一定要写babel。表示写的是jsx，用babel翻译。之前可以不写，是因为默认用的是js。
+								// 而jsx和js只是多了几个规矩，所以需要用到原生js的地方也可以写。比如下面的 const VDOM
+		//正常开发是三步：获取数据 -> 虚拟DOM -> 真实DOM
+		//但因为是教学，获取数据不从数据库获取，直接写死，所以直接写第二步
+		//1.创建虚拟DOM
+		const VDOM = <h1>Hello,React</h1> /* 此处一定不要写引号，因为不是字符串。这里是jsx,是虚拟DOM（后面讲）。js里才要写字符串 */
+		//2.渲染虚拟DOM到页面。第一个参数，要渲染的虚拟DOM；第二个参数，那个“容器”
+		ReactDOM.render(VDOM,document.getElementById('test'))
+		//整个React里，也就这里写一下document.getElementById
+
+		// const VDOM2 = <h1>Hello,React2</h1>
+		// ReactDOM.render(VDOM2,document.getElementById('test'))
+		//只能有一个根组件，这里的VDOM2会替换掉上面的第一个VDOM，以后会用子组件
+
+
+	/*
+	关于浏览器里报的警告：You are using the in-browser Babel transformer. Be sure to precompile your scripts for production - https://babeljs.io/docs/setup/
+	因为这里使用了type="text/babel"，浏览器临时把jsx翻译成js，以后代码量高了，性能会降低。
+	实际开发不会这么写代码，而是打包后配置。
+	但我们现在是基础学习阶段，所以这么用是可以的。
+	至于正式的怎么写，后面讲（使用脚手架就没了）。
+
+	Download the React DevTools for a better development experience: https://fb.me/react-devtools
+	是建议你下载react专用的开发者工具，而不是使用浏览器的。
+	（注意这个开发者工具是基于Chrome浏览器的，因此不要使用其他浏览器）
+
+	还有一个报错，是关于偏爱图标的。因为我们这里没有配置这个图标，所以报错。但这个报错只会出现一次，刷新后就不再出现了。
+	讲到05组件的时候，为了不再次出现这个报错，引入了一个favicon.ico图标
+	只需在项目根目录里放入一个名字叫favicon.ico的图标即可，不需要再head里配置。
+	但名字必须叫这个。（但好像只是不报警告了，图标还是没有？？？）
+	 */
+	</script>
+</body>
+</html>

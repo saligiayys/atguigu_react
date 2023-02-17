@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解决方案1</title>
+
+    <!-- 
+
+        解决方案1：
+        点击穿透问题，是由于浏览器的默认行为导致的
+        因此，只需在touch事件的回调函数里传入event参数，
+        通过event.preventDefault();组织浏览器默认行为
+
+        注意：方案1才是真正意义上解决该问题的方式
+        但面试中，经常会被问到有没有其他解决方式。
+        从而引出了方案2,3,4。。。。有很多，但4个就够了，其他没啥必要
+
+        http：未加密        https：加密
+
+     -->
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+
+        #wraper{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* background-color: pink; */
+        }
+
+        #baidu{
+            display: block;
+            width: 100%;
+            height: 200px;
+            background-color: orange;
+        }
+
+        #shade{
+            /* 参考wraper定位 */
+            position:absolute;
+            top: 0;
+            left: 0;
+
+            text-align: center;
+
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        h1{
+            /* 后面没有a标签 */
+            /* margin-top: 240px; */
+
+            /* 后面有a标签 */
+            margin-top: 100px;
+            color:white;
+        }
+
+        button{
+            width: 100px;
+            height: 30px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div id="wraper">
+        <a id="baidu" href="https:www.baidu.com">点我去百度</a>
+        <div id="shade">
+            <h1>恭喜一等奖！</h1>
+            <button id="btn">确认</button>
+        </div>
+    </div>
+    <script>
+        const btn = document.getElementById('btn');
+        const shade = document.getElementById('shade');
+        btn.addEventListener('touchend',(event) => {
+            event.preventDefault();
+            shade.style.display = 'none';
+        })
+    </script>
+</body>
+</html>

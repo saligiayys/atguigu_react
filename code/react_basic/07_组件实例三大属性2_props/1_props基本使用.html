@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>props基本使用</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test1"></div>
+	<div id="test2"></div>
+	<div id="test3"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//props是通过标签属性从组件外向组件内传递变化的数据
+		//而state里的数据是组件类内部的数据
+		//可以实现父组件给子组件传递数据。
+		//也可以通过子组件给父组件传递数据，但要求父提前给子传递一个函数。
+
+		//创建组件
+		class Person extends React.Component {
+			render() {
+				// console.log(this);
+				const { name, age, sex } = this.props//下面的标签内的属性会自动被保存到组件实例对象的props属性里。
+				//需求：展示的时候，使年龄增加1岁。注意不是修改真实年龄。
+				// 1.	姓名必须指定，且为字符串类型；
+				// 2.	性别为字符串类型，如果性别没有指定，默认为男
+				// 3.	年龄必须指定，且为数字类型，默认值为18
+
+				//但此时依然存在问题。还未实现上面1，2，3的需求
+				//比如<Person name="jerry" age={19}  sex="男"/>这个组件标签里属性
+				//首先名字很重要，如果姓名都没有，则后面的年龄和性别也无法补全，是不可或缺的，否则这条数据压根就没有意义。因此要进行必要性的限制
+				//第二，如果是别人拿到这个组件，不一定知道age要+1，也就不会加{}，而用了字符串。因此要对改属性进行类型的限制。
+				//最后，性别我们有时会设置默认值。
+				//这些需求，涉及到对props的限制，见2_对props进行限制.html
+
+				return (
+					<ul>
+						<li>姓名：{name}</li>
+						<li>性别：{sex}</li>
+						<li>年龄：{age + 1}</li>
+					</ul>
+				)
+			}
+		}
+		//渲染组件到页面			属性之间不用逗号
+		ReactDOM.render(<Person name="jerry" age={19} sex="男" />, document.getElementById('test1'))//这里是test1和2,3，三个容器所以不会覆盖！！！
+		//这里的标签内的属性会自动被保存到上面的const {name,age,sex} = this.props属性里。
+		//因为每写一个Person组件标签，react都会帮你new一个Person组件的实例，然后调用render
+		ReactDOM.render(<Person name="tom" age={18} sex="女" />, document.getElementById('test2'))
+		//如果要使展示时的年龄+1，需要用 age={18}，而不是age='18',否则是字符串拼接，变成181。
+		// {}相当于一个分割符，外面是react的世界，里面是js的世界。
+		//因此不能写， age = 18。 要么加""表示字符串，写死，要么{}，可以传入数值
+		//但这是你自己写的代码，你知道18的数据类型是number，但如果别人用你的组件，他们不一定清楚。
+		//或者有些属性是必须传的，但别人没传。
+		//因此为了让他人知道你所写的组件里标签的作用，需要对传入props的属性的类型进行限制
+		//由此引出了对props进行限制，看下一节课
+
+		//批量传props。也就是批量传递标签属性
+		//<Person {...p} />,，不再需要一个属性一个属性的写了，比如<Person name="tom" age={18} sex="女"/>
+		//模拟从后端返回的ajax
+		const p = { name: '老刘', age: 18, sex: '女' }
+		// console.log('@',...p);//只输出了一个 @ 。不可以这样写，见下
+		// ReactDOM.render(<Person name={p.name} age={p.age} sex={p.sex}/>,document.getElementById('test3'))
+		//简写的方式，展开运算符，可以实现批量传入。
+		//注意：const {name,age,sex} = this.props 里的变量名，要和const p = {name:'老刘',age:18,sex:'女'}里的属性名对应
+		ReactDOM.render(<Person {...p} />, document.getElementById('test3'))
+		//注意，结合4_展开运算符.html，这里的{...p}不是构造字面量对象时使用的展开语法，他们之间没有关系。
+		//这里是react，{}里写的是js表达式，也就是你实际上写的就是...p。写也应该是{{...p}}
+		//但不是不可以用展开运算符展开对象么？
+		//是因为引入了react和babel，允许用展开运算符展开对象
+		//但你不能随意使用，比如：
+		// console.log("@",...p);//这样也是不可以的，这样只会输出一个@。因此，只适用于react里标签属性的传递。
+	</script>
+</body>
+
+</html>

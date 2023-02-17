@@ -1,0 +1,11 @@
+XML早期用于存储和传输数据
+<student>
+    <name>Tom</name>
+    <age>19</age>
+</student>
+
+现在又JSON，因为XML的标签比数据还要多
+"{"name":"Tom", "age":19}"
+
+JSON.pars()   把json字符串数据转换成js数组或对象
+JSON.stringfy()    把js数组或对象转换成json字符串数据

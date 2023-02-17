@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>1_引出生命周期</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		// 需求:定义组件实现以下功能：
+		// 1. 让指定的文本做显示 / 隐藏的渐变动画
+		// 2. 从完全可见，到彻底消失，耗时2S
+		// 3. 点击“不活了”按钮从界面中卸载组件
+
+		//补充：渲染组件，专业点说叫 挂载 mount
+		//	   删除组件，专业点说叫 写在 unmount
+
+		//通过这一讲引出了react的生命周期。
+		//和人一样，在关键的时间点所做的特别的事情。
+		//react会在一个组件的生命周期中的关键的一些时间点，调用一些特殊的函数！使你可以在这些函数中完成一些特殊的操作。
+
+		//生命周期回调函数 <=> 也叫 生命周期钩子函数 <=> 也叫 生命周期函数 <=> 也叫 生命周期钩子
+		//以上名字都是一个意思
+		//你只需要在生命周期回调函数里写内容就可以，react会在一个合适的时间点来调用这个函数，执行里面的内容。
+		//这个函数，比如render，是你定义的(名字不是你定义的，但内容是)，但不是你调用的，是react调用的
+
+		//举一反三：和Angular里的生命周期函数差不多，比如ngOnInit()
+
+		//创建组件
+		class Life extends React.Component {
+
+			state = { opacity: 1 }
+
+			death = () => {
+				//清除定时器。记得要清除定时器，否则即使组件卸载了，定时器依然执行着，届时会报错。大意是:不能在已经卸载的组件上更新state
+				// clearInterval(this.timer);
+				//也可以把清除定时器的操作放在下面的componentWillUnmount里。下详
+				//不过放在这里也可以（之所以放下面，目的是引入componentWillUnmount）
+
+				//卸载组件 unmountComponentAtNode
+				ReactDOM.unmountComponentAtNode(document.getElementById('test'))
+			}
+
+
+			//错误的写法：报错。因为这是在类里面写方法。
+			//类里面只能写构造器，属性的赋值，自定义的方法，static关键字的赋值语句等。
+			//而setInterval是js定义号的方法，不能直接写在类里。
+			// setInterval(() => {
+
+			// }, interval);
+
+			//componentDidMount调用的时机：组件挂完毕
+			//render有一个兄弟叫componentDidMount，特点是会在组件挂载到页面时只会调用一次。
+			//在2_类式组件.html时讲，react发现组件是使用类定义的，随后new出来该类的实例，并通过该实例调用到原型上的render方法，
+			//这一步其实还会调用其他的方法，其中就有componentDidMount，也是通过组件的实例对象.的方式调用的
+			//这个方法和下面的componentWillUnmount以及render不是自定义方法，是React组件实例这个类内部的方法，
+			//和render一样，是后期React通过Life的实例.componentDidMount()的方式调用的，所以不用写箭头函数。
+			//复习为什么自定义函数要写成箭头函数来着？是作为事件，比如onChange，的回调使用的。所以this的指向会丢失，因此我们才使用箭头函数，不然还得用构造器以及bind那一大堆。
+			componentDidMount() {
+				console.log('componentDidMount');
+				//把定时器的id挂在组件实例的自身上
+				this.timer = setInterval(() => {
+					//获取原状态
+					let { opacity } = this.state//因为componentDidMount也是组件实例调用的，所有this指向没有问题
+					//减小0.1
+					opacity -= 0.1//注意细节，这里 -= 0.1 上面不能用const要用let
+					//不要使用 === 0，因为js里小数计算有误差，比如 0.1 + 0.2 不等于 0.3
+					if (opacity <= 0) opacity = 1//小于0，瞬间回到1
+					//设置新的透明度
+					this.setState({ opacity })//对象的简写形式。
+					// 原样是 ({opacity:opacity}) 当对象里的key和保存这个key所对应value值的变量重名时，可以简写
+				}, 200);
+			}
+
+			//组件将要卸载。也是render的兄弟之一。在组件被卸载之前，react会调用该函数一次
+			//所以像render，componentDidMount等内置函数，名字不要写错。因为是在特定的时机，react会来调用这些预定义的函数。
+			componentWillUnmount() {
+				//清除定时器
+				clearInterval(this.timer)
+			}
+
+			//render调用的时机：初始化渲染、状态更新之后
+			render() {
+				//如果要在render里写其他函数，注意不要写在return下面，因为return也表示结束一个函数，后面的代码不会执行
+				//但不能把修改透明度的代码放在render里。因为之前说过render的调用时 1 + n 次。1是第一次初始化，n是每当state改变时重新调用render
+				//而改透明度的代码在定时器的作用下会不停地修改透明度，而透明度是在state里的，改变完又进行了重新设置，导致又调用了一个render，关键是里面会再开一个定时器！
+				//所以会导致无限的递归调用render和定时器，且越来越快，电脑就离报废不远了！！！
+				//所以定时器要放在上面的componentDidMount里
+				console.log('render');
+				// setInterval(() => {
+				// 	let { opacity } = this.state;
+				// 	opacity -= 0.1;
+				// 	if (opacity <= 0) opacity = 1;
+				// 	this.setState({ opacity });
+				// }, 200);
+				return (
+					<div>
+						<h2 style={{ opacity: this.state.opacity }}>React学不会怎么办？</h2>
+						<button onClick={this.death}>不活了</button>
+					</div>
+				)
+			}
+		}
+		//渲染组件
+		ReactDOM.render(<Life />, document.getElementById('test'))
+	</script>
+</body>
+
+</html>

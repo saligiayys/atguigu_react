@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1,minmum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>rem适配_方案2_less</title>
+    <link rel="stylesheet" href="./css2/index.css">
+</head>
+    <style>
+
+        /* 
+            适配方案2： 
+            1.根字体：设备独立像素 / 10
+            2.编写样式时：
+                直接以rem为单位
+                值为：设计值 / （设计稿宽度 / 10）
+
+            优点：根字体计算简单
+            缺点：写代码时麻烦。但配合less使用，是无敌的    但方案1也可以使用less，只是不经常这么做
+
+            插件安装：easy less
+        */
+
+    </style>
+<body>
+    <div id="demo"></div>
+    <script>
+        function adapter() {
+            const dipWidth = document.documentElement.clientWidth;
+            const rootFontSize = dipWidth / 10;
+            document.documentElement.style.fontSize = rootFontSize + "px";
+        }
+
+        adapter();
+
+        window.onresize = adapter;
+
+    </script>
+</body>
+</html>

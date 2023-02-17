@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <style>
+        img{
+            width: 200px;
+            height: 150px;
+        }
+
+        #info{
+            font-size: 40px;
+        }
+    </style>
+    
+</head>
+<body>
+    <div>
+        <img src="./images/banner-logo.png" alt="">
+        <img src="./images/WeChat_logo.png" alt="">
+    </div>
+  
+    <div id="info"></div>
+
+    <script>
+        /*
+        移动端的缩放：
+        放大时，布局视口不变；视觉视口变小
+        缩小时，布局视不变；视觉视口变大
+
+        注意：移动端的缩放不会影响页面的布局(图片不会掉下来，而pc会掉下来)
+            因为缩放时，布局视口没有变化，即承装布局的容器没有变化，这是布局不错乱的本质原因！
+            类似生活中你从一扇窗户向外看外面的景色，距离窗户越近看的越多，越远看的景色越少。但窗户始终都那么大
+            底层原理其实是模拟了一个厚度
+
+        注意：因为pc浏览器模拟移动端只有一个手指，因此这节课老师使用投屏做的，因此下面的代码不会在pc上看到效果。
+        如果忘了就重新看视频。
+
+        */
+
+        // console.log("布局视口：" + document.documentElement.clientWidth);
+        // console.log("视觉视口：" + window.innerWidth);
+
+        const info = document.getElementById('info');
+        info.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth + '<br/>';
+        info.innerHTML += '您设备的视觉视口宽度：' + window.innerWidth;
+
+        //在移动端，onresize监测的是布局视口的变化。但因为移动端的缩放不会改变布局视口，因此onresize在这里没用(可能突然放大会有用，但这是浏览器机制问题)
+        //ps:这里说的是同一个设备，手指缩放不会触发onresize。但不同尺寸的设备上可以触发，用来自动适配(见rem适配方案1)
+        // window.onresize = () => {
+        //     info.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth + '<br/>';
+        //     info.innerHTML += '您设备的视觉视口宽度：' + window.innerWidth;
+        // }
+
+        //正确监控的方式
+        setInterval(() => {
+            info.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth + '<br/>';
+            info.innerHTML += '您设备的视觉视口宽度：' + window.innerWidth;
+        }, 200);
+
+
+
+
+    </script>
+</body>
+</html>

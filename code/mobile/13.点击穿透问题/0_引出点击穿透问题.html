@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>引出点击穿透问题</title>
+
+    <!-- 
+        点击穿透：
+
+        因为：在移动端，touch事件触发后，会默认触发click事件。
+        如果给一个元素绑定了touch事件，在该事件里面，由于你写了某些代码导致了发生事件的元素消失了
+        比如下面的遮罩层，点击确定后消失了。
+        此时，js引擎会把第二个click动作，在未经允许的情况下作用到了该元素后面的元素上。
+        比如下面案例中，遮罩层后面橘黄色的a标签。导致点击了a标签跳转到了百度页面
+        这是浏览器的默认行为
+
+         需要具备天时地利人和，才会出现点击穿透问题：
+        1.绑定的是touch事件
+        2.触发touch事件的元素消失
+        3.该元素背后的元素能够响应click事件，比如a标签，天生可以响应click事件。
+
+     -->
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+
+        #wraper{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* background-color: pink; */
+        }
+
+        #baidu{
+            display: block;
+            width: 100%;
+            height: 200px;
+            background-color: orange;
+        }
+
+        #shade{
+            /* 参考wraper定位 */
+            position:absolute;
+            top: 0;
+            left: 0;
+
+            text-align: center;
+
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        h1{
+            /* 后面没有a标签 */
+            /* margin-top: 240px; */
+
+            /* 后面有a标签 */
+            margin-top: 100px;
+            color:white;
+        }
+
+        button{
+            width: 100px;
+            height: 30px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div id="wraper">
+        <a id="baidu" href="https:www.baidu.com">点我去百度</a>
+        <div id="shade">
+            <h1>恭喜一等奖！</h1>
+            <button id="btn">确认</button>
+        </div>
+    </div>
+    <script>
+        const btn = document.getElementById('btn');
+        const shade = document.getElementById('shade');
+        btn.addEventListener('touchend',() => {
+            shade.style.display = 'none';
+        })
+    </script>
+</body>
+</html>

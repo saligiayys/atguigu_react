@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>key的作用</title>
+</head>
+<body>
+<div id="test"></div>
+<!-- 引入react核心库 -->
+<script type="text/javascript" src="../js/react.development.js"></script>
+<!-- 引入react-dom -->
+<script type="text/javascript" src="../js/react-dom.development.js"></script>
+<!-- 引入babel -->
+<script type="text/javascript" src="../js/babel.min.js"></script>
+
+<script type="text/babel">
+	/*
+        react的diffing算法要求数组遍历时，里面的每个节点必须拥有一个唯一的key属性，作为虚拟DOM的唯一标识。
+        这里使用的是map的index，你也可以用生成随机数的方式或时间戳，但明显索引值更方便
+        但用索引值在某些情况下可能会出现一些问题，后期会仔细讲会遇到什么问题。
+
+   经典面试题:
+      1). react/vue中的key有什么作用？（key的内部原理是什么？）
+      2). 为什么遍历列表时，key最好不要用index?
+      
+			1. 虚拟DOM中key的作用：
+					1). 简单的说: key是虚拟DOM对象的标识, 在更新显示时key起着极其重要的作用。
+
+					2). 详细的说: 当状态中的数据发生变化时，react会根据【新数据】生成【新的虚拟DOM】, （也就是只要有新数据，即使有的数据没改变，react也会以最快速度完整的生成一份虚拟dom，用来和旧的虚拟dom作对比）
+												随后React进行【新虚拟DOM】与【旧虚拟DOM】的diff比较，比较规则如下：
+
+									a. 旧虚拟DOM中找到了与新虚拟DOM相同的key：
+												(1).若虚拟DOM中内容没变, 直接使用之前的真实DOM
+												(2).若虚拟DOM中内容变了, 则生成新的真实DOM，随后替换掉页面中之前的真实DOM
+
+									b. 旧虚拟DOM中未找到与新虚拟DOM相同的key
+												根据数据创建新的真实DOM，随后渲染到到页面
+									
+			2. 用index作为key可能会引发的问题：
+								1. 若对数据进行：逆序添加、逆序删除等破坏顺序操作:  （注意是逆序！！）
+												会产生没有必要的真实DOM更新 ==> 界面效果没问题, 但效率低。
+
+								2. 在第1点上，如果结构中还包含输入类的DOM：
+												会产生错误DOM更新 ==> 界面有问题。
+												
+								3. 注意！如果不存在对数据的逆序添加、逆序删除等破坏顺序操作，
+									仅用于渲染列表用于展示，使用index作为key是没有问题的。
+									也就是如果下面改用：this.setState({persons:[...persons,p]})，把p放在后面则不会出现问题。
+					
+			3. 开发中如何选择key?:
+								1.最好使用每条数据的唯一标识作为key, 比如id、手机号、身份证号、学号等唯一值。
+								  如果没有，找后端人员沟通(所以从数据库拿数据的时候，要带上数据库里的那个id，或其他唯一标识)
+								2.如果你十分，非常，确定，只是简单的展示数据，用index也是可以的。
+									（但如果有id,手机号之类的，为啥不用呢？）
+   */
+	
+	/* 
+		在此案例中，使用map的index作为key，虽然不会报错，但是存在非常严重的效率问题。
+
+		重要前提：this.setState({persons:[p,...persons]})   新p放在前面，逆序
+		（如果新p放在后边，且没有输入类dom，不会有数据错乱这个问题，只是影响效率。但我们的需求需要逆序添加）
+
+		慢动作回放----使用index索引值作为key
+
+			初始数据(初次挂载)：
+					{id:1,name:'小张',age:18},
+					{id:2,name:'小李',age:19},
+			初始的虚拟DOM：
+					<li key=0>小张---18<input type="text"/></li>
+					<li key=1>小李---19<input type="text"/></li>
+
+			更新后的数据：
+					{id:3,name:'小王',age:20},
+					{id:1,name:'小张',age:18},
+					{id:2,name:'小李',age:19},
+			更新数据后的虚拟DOM：
+					<li key=0>小王---20<input type="text"/></li>
+					<li key=1>小张---18<input type="text"/></li>
+					<li key=2>小李---19<input type="text"/></li>
+
+			此种情况，根据上面的规则，先找key相同的，如果key相同再判断内容是否相同，如果不相同，替换旧的，转成真实DOM，放到页面上。
+			因此，旧的小张key=0，新的小王key=0，但它们内容不同。因此新的小王替换了旧的小张，转成真实DOM，放到页面上。
+			以此类推。本来只需要单独增加一个小王，小张和小李可以复用，但结果却是把整体的真实DOM都修改了一遍，造成了不必要的真实DOM更新，影响性能。
+			如果这里是2000条数据呢？本来代价只是修改一条，结果修改了2001条。所以这是一个严重的效率问题！
+
+            且！这套规则非常重要，如果页面里出现了输入类的DOM节点，比如案例里的input，
+            打开页面在输入框里输入内容后，点击按钮添加小王会发现，
+            因为使用的是index，会导致数据错乱！上节课说过，因为Diffing算法会多层深入，逐层进行比对。所以li里的input不会改变
+            因此，更新后的虚拟DOM里，新添加的小王的input框里残留的内容是之前小张input框里的，而不是空的内容
+
+			解决方式：使用id唯一标识作为key 如下
+
+	-----------------------------------------------------------------
+
+	慢动作回放----使用id唯一标识作为key
+
+			初始数据(初次挂载)：
+					{id:1,name:'小张',age:18},
+					{id:2,name:'小李',age:19},
+			初始的虚拟DOM：
+					<li key=1>小张---18<input type="text"/></li>
+					<li key=2>小李---19<input type="text"/></li>
+
+			更新后的数据：
+					{id:3,name:'小王',age:20},
+					{id:1,name:'小张',age:18},
+					{id:2,name:'小李',age:19},
+			更新数据后的虚拟DOM：
+					<li key=3>小王---20<input type="text"/></li>
+					<li key=1>小张---18<input type="text"/></li>
+					<li key=2>小李---19<input type="text"/></li>
+
+			最终只有新的<li key=3>小王---20<input type="text"/></li>转成了新的真实DOM，放到页面上。
+			小张和小李得以复用。且不会导致input框里的内容错乱
+
+
+
+	 */
+	class Person extends React.Component{
+
+		state = {
+			persons:[
+				{id:1,name:'小张',age:18},
+				{id:2,name:'小李',age:19},
+			]
+		}
+
+		add = ()=>{
+			const {persons} = this.state
+			const p = {id:persons.length+1,name:'小王',age:20}
+			this.setState({persons:[p,...persons]})//最新的小王放在数组第一个
+		}
+
+		render(){
+			return (
+				<div>
+					<h2>展示人员信息</h2>
+					<h2>给张输入点内容才能看出区别！</h2>
+					<button onClick={this.add}>添加一个小王</button>
+					<h3>使用index（索引值）作为key</h3>
+					<ul>
+						{
+							this.state.persons.map((personObj,index)=>{
+								return <li key={index}>{personObj.name}---{personObj.age}<input type="text"/></li>
+							})
+						}
+					</ul>
+					<hr/>
+					<hr/>
+					<h3>使用id（数据的唯一标识）作为key</h3>
+					<ul>
+						{
+							this.state.persons.map((personObj)=>{
+								return <li key={personObj.id}>{personObj.name}---{personObj.age}<input type="text"/></li>
+							})
+						}
+					</ul>
+				</div>
+			)
+		}
+	}
+
+	ReactDOM.render(<Person/>,document.getElementById('test'))
+</script>
+</body>
+</html>

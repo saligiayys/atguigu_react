@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>jsx语法规则</title>
+	<style>
+		.title {
+			background-color: orange;
+			width: 200px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//需求：
+		// 1.标签里的id和内容要以动态的方式读取，即要用变量
+		// 2. 让h2有一个样式，且是提前写好的样式的类名
+		// 3. 给span加样式，使其文字变成白色。要求，用内联样式。
+		// 4. 在页面里添加一个输入框
+		const myId = 'aTgUiGu'
+		const myData = 'HeLlo,rEaCt'
+
+		//1.创建虚拟DOM
+		const VDOM = (//如果标签是多级结构，最好用一个()括起来，表示是一个整体，更整齐
+			//jsx每个虚拟DOM的根标签只能有一个！！
+			<div>
+				<h2 className="title" id={myId.toLowerCase()}>
+					<span style={{ color: 'white', fontSize: '29px' }}>{myData.toLowerCase()}</span>
+				</h2>
+				<h2 className="title" id={myId.toUpperCase()}> 大小写算是两个不同的id
+					<span style={{ color: 'white', fontSize: '29px' }}>{myData.toLowerCase()}</span>
+				</h2>
+				<input type="text" />
+				<good>小写表示html里的预定义标签。html里没有good标签，虽然能显示，但报错</good>
+				<Good>大写则代表组件，若未定义，则报错</Good>
+			</div>
+			//注意，之前讲过，fontSize不带引号。"font-size"要带引号
+			//注意：这里写的是jsx标签，不是html标签。但这里的jsx标签会被转为html标签
+		)
+		//2.渲染虚拟DOM到页面
+		ReactDOM.render(VDOM, document.getElementById('test'))
+
+		/*
+				jsx语法规则：
+						1.定义虚拟DOM时，不要写引号。例如：直接写<h1>Hello World!</h1> 而不是 "<h1>Hello World!</h1>"
+						2.标签中混入JS表达式时要用{}。(好像和angular一样)
+							表达式，代码，语句的区别：见jsx小练习
+						3.内部样式表(写在head标签里的css)和外部样式表(外部引入的css)样式的类名指定不要用class，要用className。  为的是避开es6里的class类关键字
+							className="title" 不要使用{} {}里写的是js表达式
+						4.内联样式(写在html标签里的css)，要用style={{key:value}}的形式去写。  
+							最外边{}是js表达式，里面的{}是多组key:value的对象
+							React使用小驼峰，比如font-size，要写成fontSize
+						5.每个虚拟DOM只能有一个根标签，否则报错JSX expressions must have one parent element.
+						6.标签必须闭合：方式一自结束标签：<input type="text"/>  方式二<input type="text"></input>
+						7.注意，const VDOM = 的不是html标签，而是jsx标签。但最后会被转换成html标签
+							标签首字母
+								(1).若小写字母开头，则将该标签转为html中同名元素(元素开头小写)，比如span -> span。
+									若html中无该标签对应的同名元素，则报错。
+									比如 good -> good, html里没有good
+								(2).若大写字母开头，react就去渲染对应的组件(组件开头大写)，若组件没有定义，则报错。
+
+		 */
+	</script>
+</body>
+
+</html>

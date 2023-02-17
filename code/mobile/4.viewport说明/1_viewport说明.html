@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <!-- <meta name="viewport" content="maximum-scale=2"> -->
+    <!-- <meta name="viewport" content="user-scalable=no"> -->
+    <!-- <meta name="viewport" content="viewport-fit=cover"> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1,minmum-scale=1,user-scalable=no,viewport-fit=cover">
+    <!-- 
+        完整版，禁止用户缩放（除了safari浏览器）。其实相当于这个网页在模拟一个app的效果，app就不能缩放
+        京东，淘宝等网站怎么写我们就怎么写！
+        其他的不用记，只要是移动端，一上来就写这行代码。
+    -->
+
+    <!-- 
+        meta name="viewport"里能写什么参数，看截图！！！ 
+        虽然initial-scale=1.0也能开启理想视口，但需要两个都写，起到双重保障
+
+        maximum-scale和minmum-scale控制最大/最小缩放   值为1则表示禁止用户缩放
+        虽然双指缩放时可以超过这个设定值，但一旦松开，则会恢复到这个值的位置。实际开发值为1即可
+
+        user-scalable也是禁止缩放，但习惯全都写上，双重保障。   
+
+        注意：现在苹果已经不支持maximum-scale（但支持minmum-scale）和user-scalable（因为人家不想破坏用户体验）。
+
+        一般移动端都要加viewport-fit=cover，解决刘海屏的问题
+    -->
+    <title>Document</title>
+
+    <style>
+        #info{
+            font-size: 40px;
+        }
+    </style>
+
+</head>
+<body> 
+    <div id="info"></div>
+    <script>
+        // console.log('布局' + document.documentElement.clientWidth);
+
+        //以下代码无法在pc端验证，因为只有一个手指
+        //如果有朝一日你可以自己用移动端测试，注意要用微信的扫描打开网页，因为该网页不是苹果safari。Safari不支持maximum-scale和user-scalable
+        const info = document.getElementById('info');
+        info.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth + '<br/>';
+        info.innerHTML += '您设备的视觉视口宽度：' + window.innerWidth;
+        setInterval(() => {
+            info.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth + '<br/>';
+            info.innerHTML += '您设备的视觉视口宽度：' + window.innerWidth;
+        }, 200);
+    </script>
+</body>
+</html>

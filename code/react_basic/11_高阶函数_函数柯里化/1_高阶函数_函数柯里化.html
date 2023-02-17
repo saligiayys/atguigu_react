@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>高阶函数_函数柯里化</title>
+</head>
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+	
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//#region
+				/*
+					ps：有时候写注释不能折叠，可以使用这种方式，在首尾加上#region和#endregion
+
+					高阶函数：如果一个函数符合下面2个规范中的任何一个，那该函数就是高阶函数。
+									1.若A函数，接收的参数是一个函数，那么A就可以称之为高阶函数。
+									2.若A函数，调用的返回值依然是一个函数，那么A就可以称之为高阶函数。
+									常见的高阶函数有：Promise、setTimeout、arr.map()等等
+
+					函数的柯里化：通过函数调用连续返回函数的方式，实现多次接收参数最后统一处理的函数编码形式。
+					见复习->6_演示函数的柯里化.html
+						function sum(a){
+							return(b)=>{
+								return (c)=>{
+									return a+b+c
+								}
+							}
+						}
+					*/
+		//#endregion
+		//创建组件
+		class Login extends React.Component{
+			//初始化状态
+			state = {
+				username:'', //用户名
+				password:'' //密码
+			}
+
+			//需求把之前的saveUsername和savePassword两个方法整合成一个，保存表单数据到状态中
+			//（不然如果还有地址，邮箱啥的还要写很多相同的方法。）
+			
+			//错误的写法：这样写，下面的onChange={this.saveFormData('username')}和onChange={this.saveFormData('password')}使用了()，意思是你自己调用了saveFormData
+			//这不是在把saveFormDate这个函数交给onChange作为回调，而是是把saveFormDate调用后的返回值!交给了onChange作为回调函数，注意是回调函数哦！
+			//而saveFormDate没设返回值，默认return undefined
+			//所以效果是只会在第一次“由你调用的时候”输出一次username和password，且形参的event就再也不是真正的event了而是传入的username和password
+			//然后做任何操作，React都不会调用saveFormDate，因为你给React一个undefined作为回调函数，自然没有效果
+			// saveFormData = (event) => {
+			// 	console.log(event);
+			// }
+
+			//正确的写法：解决方式就是让saveFormData的返回值是一个函数。此时，saveFormData这个函数返回的那个函数，将会作为onChange的回调函数。
+			//因此，每次你在输入框里输入内容触发onChange时，saveFormData返回的那个函数，才是你真正调用的函数。
+			//（自认理解：最开始的你是，你亲自调用了saveFormData，把其返回值匿名函数传给了onChange，之后每次调用的都是这个匿名函数）
+			//而此时，这个saveFormData就是一个高阶函数！！！且用到了函数的柯里化，因为把dataType和event这两个参数，统一在return的那个函数里统一进行了处理。
+			saveFormData = (dataType)=>{//不想用柯里化想在这里也把event一起接收？这里不可能，因为event是触发onChange后react帮你生成的。谁都想这么写，但写不了。
+										//其他方式不用柯里化实现这个功能的演示，见2_不用函数柯里化的实现.html
+				console.log(dataType);
+				return (event)=>{//这个return的函数，才是react帮你调用的回调函数，因此有一个event参数
+					// console.log("@");//测试，随着onChange的触发，每次都会输出一个@
+					console.log(dataType, event.target.value)
+					//错误的
+					// this.setState({dataType:event.target.value})
+					//对象里的属性名都是字符串，但我们平常都是简写，不写'dataType'
+					//因此上面的dataType其实和'dataType'是一样的。这样的效果是新建了一个叫dataType的state
+					//和在讲受控组件时，未初始化state就setState()了一样
+					//而输入的值，应该是给username或password的才对 
+					
+					//正确的，我们需要读取dataType这个变量。见复习,5_对象相关的知识
+					this.setState({[dataType]:event.target.value})
+				}
+			}
+
+			//表单提交的回调
+			handleSubmit = (event)=>{
+				event.preventDefault() //阻止表单提交
+				const {username,password} = this.state
+				alert(`你输入的用户名是：${username},你输入的密码是：${password}`)
+			}
+			render(){
+				return(//this.saveFormData('username')的形式相当于自己调用了这个函数，但因为该函数会return一个函数，所以return的那个函数，才真正是onChange的回调函数
+						//如果saveFormDate返回的不是一个函数，则相当于把结果给了onChange。没有写return，则默认返回undefined
+					   //所以，以后不能说，事件的回调一定不能写小括号，而是你必须要把一个函数交给一个事件作为回调函数
+					<form onSubmit={this.handleSubmit}>
+						用户名：<input onChange={this.saveFormData('username')} type="text" name="username"/>
+						密码：<input onChange={this.saveFormData('password')} type="password" name="password"/>
+						<button>登录</button>
+					</form>
+				)
+			}
+		}
+		//渲染组件
+		ReactDOM.render(<Login/>,document.getElementById('test'))
+	</script>
+</body>
+</html>

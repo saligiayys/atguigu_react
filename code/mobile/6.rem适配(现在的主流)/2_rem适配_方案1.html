@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1,minmum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>rem适配_方案1</title>
+</head>
+    <style>
+        /* 
+        设计师常用iPhone6作为依据设计网页。设备独立像素375px，我们约定俗成规定的根标签字体大小100px。
+        为什么设计稿根标签字体选择100px，因为好计算。为什么不是10px，因为有的浏览器字体最低是12。为啥不是1000px，因为太大了有病
+        如果当前设备是iPhone6 plus，如何计算该设备的根标签字体大小？已经有人提前找到了比例关系
+            1. 新设备根标签字体大小 = （该设备独立像素 * 100(设计稿根字体大小) / 设计稿的宽度(375)
+            2. 编码时，直接以rem为单位： 设计值(比如345) / 100
+
+             优点：根字体计算麻烦
+            缺点：写代码时简单
+
+            主流是方案1
+
+        */
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 根字体要动态，所以要写在js里 */
+        /* html,body{
+            font-size: 100px;
+        } */
+
+        #demo{
+            /* 案例：设计稿宽度375，里面有一个容器宽345 */
+            width: 3.45rem;
+            height: 1.5rem;
+            margin: 0 auto;
+            margin-top: 0.15rem;
+            background-color: skyblue;
+            /* 边框参与适配 */
+            /* border: 0.01rem solid black; */
+            /* 边框不参与适配 */
+            border: 1px solid black;
+        }
+
+    </style>
+<body>
+    <div id="demo"></div>
+    <script>
+        // //1.获取手机横向的设备独立像素。因为通过meta标签开启了理想视口，所以设备独立像素 = 布局视口
+        // const dipWidth = document.documentElement.clientWidth;
+        // //2.计算根字体大小（100是指定的设计稿跟字体大小，375是设计稿宽度）
+        // const rootFontSize = (dipWidth * 100) / 375
+        // //3.设置跟字体
+        // document.documentElement.style.fontSize = rootFontSize + "px";
+
+        //注意以上代码，在切换设备的时候，需要手动刷新才能正确显式。
+        //实际开发需要对此做实时适配。但其实实际生活中意义不大，因为是在只有换设备的情况下才能看出来
+        //但我们依然要这样做的原因是，我们需要在浏览器的移动端模拟器上进行测试！
+
+        //封装成方法，方法名约定俗成叫做：adapter 适配器
+        function adapter() {
+            const dipWidth = document.documentElement.clientWidth;
+            const rootFontSize = (dipWidth * 100) / 375
+            document.documentElement.style.fontSize = rootFontSize + "px";
+        }
+
+        //一上来先调用一次
+        adapter();
+
+        //如果切换设备，再次调用
+        // window.onresize = () => {
+        //     adapter();
+        // }
+
+        //可以简写成：
+        window.onresize = adapter;
+
+        //为啥可以这么简写？往下看
+        // function log () {
+        //     console.log(1);
+        //     console.log(2);
+        //     console.log(3);
+        // }
+
+        // // setTimeout(() => {   时间到了以后，定时器调用回调函数，回调函数调用log
+        // //     log();
+        // // }, 1000);
+
+        // setTimeout(log,1000);//相当于log直接作为了定时器的回调函数
+
+    </script>
+</body>
+</html>

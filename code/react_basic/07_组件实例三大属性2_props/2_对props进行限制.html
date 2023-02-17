@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>对props进行限制</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test1"></div>
+	<div id="test2"></div>
+	<div id="test3"></div>
+
+	<!-- 引入react核心库，全局就有了React对象 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM，全局就有了ReactDOM对象 -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+	<!-- 引入prop-types，用于对组件标签属性进行限制，全局就有了PropTypes对象 -->
+	<script type="text/javascript" src="../js/prop-types.js"></script>
+
+	<script type="text/babel">
+		//需求：展示的时候，使年龄增加1岁。注意不是修改真实年龄。
+		// 1.	姓名必须指定，且为字符串类型；
+		// 2.	性别为字符串类型，如果性别没有指定，默认为男
+		// 3.	年龄为字符串类型，且为数字类型，默认值为18
+
+		//你定义了一个Person组件，每写一个Person组件标签，react都会帮你new一个Person组件的实例。
+		//而在组件实例身上的props属性里，就囊括着你所有传进去的数据。
+		//因此，要对props进行限制，就要操作Person类
+
+		//创建组件
+		class Person extends React.Component {
+			render() {
+				// console.log(this);
+				const { name, age, sex } = this.props
+				//props是只读的
+				//this.props.name = 'jack' //此行代码会报错，因为props是只读的
+				//而下面的<li>年龄：{age+1}</li>不是修改，而是运算。是用拿到的age+1做运算，把结果展示在页面上。
+				//this.props.age = age + 1; 才是修改
+				return (
+					<ul>
+						<li>姓名：{name}</li>
+						<li>性别：{sex}</li>
+						<li>年龄：{age + 1}</li>
+					</ul>
+				)
+			}
+		}
+		//对标签属性进行类型、必要性的限制。
+		//注意，Person.propTypes 和 下面的PropTypes的大小写。
+		// PropTypes是react的内置对象。而propTypes是类的属性（注意不是实例，所以后面讲简写的时候，需要static关键字）
+		//React的机制是去类里面找，而不是实例。
+		//可以理解成是一种规则。如果给一个类加了propTypes，就被视为在给这个类加规则。
+		//一个p小写，一个P大写。注意Person.propTypes千万别写错，react底层会读取这个属性。读到了，就知道你想给标签属性做限制，写错了不会报错，但没有限制效果了
+		//再次提醒：这是propTypes和PropTypes，意思是property type。不是prototype
+		//再次提醒，是给类添加属性propTypes，而不是给实例添加，所以是Person.propTypes(以及后面简写的static)
+		Person.propTypes = {
+			//name:React.PropTypes.string.isRequired, //react16之前的写法，已经弃用。
+			//react16之后，将react和PropTypes进行了分离，目的是为了更好的性能，因为不是所有情况下都要对标签属性的类型进行限制。即如果需要才用
+			//现在需要在上面单独引入prop-types.js库的这个依赖包，用于对组件标签属性进行限制。如果传入数据的类型非法，会报错，但依然会保证页面的正常显示。
+			//引入后，相当于全局多了一个PropTypes对象，可以直接使用。
+			name: PropTypes.string.isRequired, //限制name必传，且为字符串
+			sex: PropTypes.string,//限制sex为字符串
+			age: PropTypes.number,//限制age为数值
+			speak: PropTypes.func,//限制speak为函数
+			//string,number开头小写的原因是为了区分内置的String和Number对象，避免冲突
+			//但function是定义函数的关键字，所以必须写func
+		}
+		//指定默认标签属性值
+		Person.defaultProps = {
+			sex: '男',//sex默认值为男
+			age: 18 //age默认值为18
+		}
+		//渲染组件到页面
+		ReactDOM.render(<Person name={100} speak={speak} />, document.getElementById('test1'))
+		ReactDOM.render(<Person name="tom" age={18} sex="女" />, document.getElementById('test2'))
+
+		const p = { name: '老刘', age: 18, sex: '女' }
+		// console.log('@',...p);
+		// ReactDOM.render(<Person name={p.name} age={p.age} sex={p.sex}/>,document.getElementById('test3'))
+		ReactDOM.render(<Person {...p} />, document.getElementById('test3'))
+
+		function speak() {
+			console.log('我说话了');
+		}
+	</script>
+</body>
+
+</html>

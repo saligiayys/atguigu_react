@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>2_类式组件</title>
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//1.创建类式组件	在函数式组件里，函数名就是组件名；因此类式组件里，类名就是组件名
+		// 但类式组件，必须要让这个类，继承React.Component这个内置类
+		class MyComponent extends React.Component {
+			//对于 这个组件，类的构造器可以省略，因为不需要其他额外的初始化操作。具体内容后边会讲
+			render() {//作为类式组件，类中必须要有render这个方法，且必须有返回值！你想展示什么，你就返回什么
+				//render是放在哪里的？—— MyComponent的原型对象上，供实例使用。和之前讲的类的内容一样，但它的实例是谁？这里没有写new MyComponent呀
+				//是你在写了下面第33行代码后，react帮你new了一个MyComponent的实例。 所以在你看不到的位置有一个MyComponent的实例
+				//render中的this是谁？—— MyComponent的实例对象 <=> 即MyComponent组件的实例对象。注意不是组件对象，而是组件的实例对象！！
+				//一看到组件实例对象的实例两个字就要知道，这个组件是通过类来创建的，不是函数。
+				console.log('render中的this:', this);
+				return <h2>我是用类定义的组件(适用于【复杂组件(有state)】的定义)</h2>
+			}
+		}
+		//2.渲染组件到页面
+		//这个render和上面的render没有任何关系，只是重名
+		ReactDOM.render(<MyComponent />, document.getElementById('test'))
+		/*
+			执行了ReactDOM.render(<MyComponent/>.......之后，发生了什么？
+					1.React解析组件标签，找到了MyComponent组件。
+					2.发现组件是使用类定义的，随后new出来该类的实例，并通过该实例调用到原型上的render方法。
+					3.将render返回的虚拟DOM转为真实DOM，随后呈现在页面中。
+
+			在MyComponent组件的实例对象上，有很多属性，有的是给我们用的，有的是给React自己用的。它们都是继承于React.Component的
+			其中，我们需要用到的是，props,refs,state。被称为组建的三大属性！
+			注意，这些属性是组件的实例对象身上的，不是组件那个类身上的。
+			并且只有类式组件才有这些属性的概念。因为函数式组件压根连实例都没有。
+			ps：但是最新版react里有一个新的特性，hooks，钩子。可以使函数式组件具有这三大属性！后面讲
+		*/
+	</script>
+</body>
+
+</html>

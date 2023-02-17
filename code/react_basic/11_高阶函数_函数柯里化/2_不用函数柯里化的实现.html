@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>2_不用函数柯里化的实现</title>
+</head>
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+	
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//实际开发中，用柯里化和不用柯里化的情况都有
+		
+		//这个案例说的使不用柯里化，但用的还是高阶函数，因为返回的还是一个函数
+		//但我觉得原理和柯里化没啥区别，都是在第一个函数里拿到两个参数，最后在第二个函数里里处理了
+		//只不过这里的第一个函数是个匿名函数。
+
+		//创建组件
+		class Login extends React.Component{
+			//初始化状态
+			state = {
+				username:'', //用户名
+				password:'' //密码
+			}
+
+			//保存表单数据到状态中
+			saveFormData = (dataType,event)=>{
+				this.setState({[dataType]:event.target.value})
+			}
+
+			//表单提交的回调
+			handleSubmit = (event)=>{
+				event.preventDefault() //阻止表单提交
+				const {username,password} = this.state
+				alert(`你输入的用户名是：${username},你输入的密码是：${password}`)
+			}
+			render(){
+				return(
+					//不用函数柯里化的解决方式。直接在onChange里，以内联函数的方式传入。
+					//onChange调用这个内联函数，因此react会传入event，用这个函数再调用saveFormData，把参数传给saveFormData
+					<form onSubmit={this.handleSubmit}>
+						用户名：<input onChange={event => this.saveFormData('username',event) } type="text" name="username"/>
+						密码：<input onChange={event => this.saveFormData('password',event) } type="password" name="password"/>
+						<button>登录</button>
+					</form>
+				)
+			}
+		}
+		//渲染组件
+		ReactDOM.render(<Login/>,document.getElementById('test'))
+	</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+    <style>
+
+        /* 布局视口：layout viewport   俗称980 */
+        /* 注意这里说的是布局视口，就是页面在移动端上变得特别小的那种，现在已经不用了。（现在又理想视口标准） */
+        /* 简单说布局视口，之前的时候网页都是pc端的，但是手机太小，需要一个大容器(980px)把pc端网页转进去，然后再等比压缩放在手机里 */
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        #demo{
+            background-color: green;
+            /* width: 375px; */
+            width: 980px;
+            /* 
+            以iPhone6为例，分辨率750px，dpr=2，独立设备像素375px，css也是375px
+            之前说宽度375可以充满宽度，是建立在没有980的情况下。
+            但因为布局视口是980px，要先把375放在980里，然后再等比缩放至符合设备的尺寸
+            因此980才可以充满宽度！！！
+            以前如果大于980，多余的会被切掉。但现在会出现滚动条。
+            */
+        }
+    </style>
+
+</head>
+<body>
+    <div id="demo"></div>
+    <script>
+        const demo = document.getElementById('demo');  
+        demo.innerHTML = '您设备的布局视口宽度：' + document.documentElement.clientWidth;
+//这个document.documentElement.clientWidth既是移动端的布局视口，也是pc端的初始包含快，取决于是移动端还是pc段
+//大部分移动端设备都是980px
+//如果不是，把上面head标签里的那个最佳视口相关的标签删除即可
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1,minmum-scale=1,user-scalable=no,viewport-fit=cover">
+    <title>rem适配_方案1_less</title>
+    <link rel="stylesheet" href="./css1/index.css">
+</head>
+<body>
+    <div id="demo"></div>
+    <script>
+        function adapter() {
+            const dipWidth = document.documentElement.clientWidth;
+            const rootFontSize = (dipWidth * 100) / 375;
+            document.documentElement.style.fontSize = rootFontSize + "px";
+        }
+
+        adapter();
+
+        window.onresize = adapter;
+
+    </script>
+</body>
+</html>

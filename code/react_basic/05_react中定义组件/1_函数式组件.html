@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>1_函数式组件</title>
+	<!--	<link rel="icon" href="../favicon.ico">-->
+</head>
+
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		//所谓js的模块化，就是把一个庞大的js代码，按照不同的业务逻辑拆成很多份。但这只是js自己。
+		//对于html网页结构来说，其实之前也已经进行过拆分了，只是没有像js一样被单独拿出去。
+		//比如一个网页的头部是一个div（也就是一个盒子布局），左侧导航是一个div，右侧内容区是一个div。
+		//而组件化，不光可以拆解js，还可以拆解html,css，以及图片，视频等。
+		//也就是拆得更狠了。
+		//比如一个网页的头部，实现这个头部区域的所有html,css,js,img,video,font等等所有的东西统统全部打包带走。
+		//这些东西组合在一起，就形成了网页头部这个组件。也就是实现头部代码+资源的集合
+		//之前的js模块，是为了更合理的划分，更高效的复用js，方便维护
+		//组件化开发，也是为了更多的组件可以复用，方便维护
+		// 其实和之前一个内容区里复制相同结构的li的操作类似。
+		//只是这里不是复制粘贴而是引入组件。然后修改图片等详细信息即可。
+		//因此，我们以后写项目，都是模块化，组件化，工程化（之后讲）的项目
+
+		//在React中，有两种组件的定义的方式，一是函数式组件，二是类式组件。
+
+		//1.创建函数式组件 （现在主流是使用函数式组件配合hooks）
+		//因为这里是react，这是用函数定义的组件，所以不要说MyComponent是函数，而是组件！
+		// function MyComponent(){//老师上课讲的方式
+		// const MyComponent = function MyComponent() {//现在这么写
+		const MyComponent = () => {//或用箭头函数
+			console.log(this); //此处的this是undefined，因为babel编译后开启了严格模式。不允许自定义的函数里的this指向window(ES5)
+			return <h2>我是用函数定义的组件(适用于【简单组件(没有state)】的定义)</h2>
+		}
+		//2.渲染组件到页面
+		ReactDOM.render(<MyComponent />, document.getElementById('test'))//注意之前jsx语法规则说过，组件要大写，标签要小写。且标签必须闭合
+		//细节：MyComponent本质是个函数，但不是你调用的，是react帮你调用的。
+		// ReactDOM.render(MyComponent(), document.getElementById('test'))
+		//用这种方式是你自己调用的，不是react帮你调用的。虽然也能正常显式，但你会发现，在开发者工具的components里没有MyComponent
+
+		/*
+			执行了ReactDOM.render(<MyComponent/>.......之后，发生了什么？
+					1.React解析组件标签，找到了MyComponent组件。
+					2.发现组件是使用函数定义的，随后调用该函数，将返回的虚拟DOM转为真实DOM，随后呈现在页面中。
+		*/
+	</script>
+</body>
+
+</html>

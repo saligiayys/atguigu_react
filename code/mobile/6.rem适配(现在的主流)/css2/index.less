@@ -1,0 +1,20 @@
+@font:375/10rem;
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+#demo{
+    /* 345 / （375 / 10）= 9.2 */
+    // width: 345 / (375 / 10)rem;  错误，less里有括号，css文件里的单位之前会有一个空格，导致浏览器不识别，例如 9 rem
+    //因此不能使用括号(托括号换符号)，或定义变量
+    //注意新版本less除法必须加括号，但单位之前不能有括号！！
+    width: (345/375)*10rem;
+    // 使用定义的变量
+    // (150/@font)rem 不识别，rem要写在150后面    或者把rem放在@font:375/10rem 后面 但10和rem之间也不能有空格
+    height: (150rem/@font);
+    background-color: skyblue;
+    margin: 0 auto;
+    margin-top: (15rem/@font);
+}

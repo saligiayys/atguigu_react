@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>1_非受控组件</title>
+</head>
+<body>
+	<!-- 准备好一个“容器” -->
+	<div id="test"></div>
+	
+	<!-- 引入react核心库 -->
+	<script type="text/javascript" src="../js/react.development.js"></script>
+	<!-- 引入react-dom，用于支持react操作DOM -->
+	<script type="text/javascript" src="../js/react-dom.development.js"></script>
+	<!-- 引入babel，用于将jsx转为js -->
+	<script type="text/javascript" src="../js/babel.min.js"></script>
+
+	<script type="text/babel">
+		// 需求: 定义一个包含表单的组件
+		// 输入用户名密码后, 点击登录提示输入信息
+
+		//非受控组件，现用现取
+		//表单内的输入类DOM的值（包括输入框，单选按钮等），是在点击按钮时，调用回调里的函数才提取出来。
+
+		//创建组件
+		class Login extends React.Component{
+			handleSubmit = (event)=>{
+				//当今的需求是，通过表单获取数据后，不再跳转到指定页面，而是通过ajax实现页面无刷新渲染数据以及传递/获取数据
+				//因此我们不希望表单真正触发提交这个操作。我们只需要获得username和password后通过ajax送到后台
+				//注意：仅仅删除表单的action属性并不能阻止刷新。它会在当前页面刷新一下。
+				//若想阻止表单跳转，光删除action属性是不够的，它是默认事件，不写地址也会原地刷新，触发表单提交。
+				//因此需要原生的event.preventDefault() 阻止表单提交(虽然触发onSubmit这样表单就不会真正提交了，而是获得数据后停止提交)
+				//阻止表单提交。之后依靠ajax交互，而不是表单。实现页面无刷新获取送数据（无刷新指的是网址不变，刷新按钮没转过，表单内容没变）
+				event.preventDefault() 
+				const {username,password} = this
+				alert(`你输入的用户名是：${username.value},你输入的密码是：${password.value}`)
+			}
+			render(){
+				return(//不指定请求方式，form表单默认是get请求，默认参数是query(就是?username=xxx&password=xxx这种格式的)。因此如果没写参数，会在网址最后发现只有一个"?"
+						//获取两个input的value
+						//方式1：原生里，表单有一个事件叫onsubmit。react里也有，只是s大写，onSubmit
+						//	button标签的默认type属性值为submit，因此可以触发提交！
+						//方式2：当然，也可以给button绑定click事件，但既然用到表单了，就没有必要单独给按钮绑定事件了
+					//<form action='http://baidu.com'>
+					<form onSubmit={this.handleSubmit}>
+						用户名：<input ref={c => this.username = c} type="text" name="username"/>
+						密码：<input ref={c => this.password = c} type="password" name="password"/>
+						<button>登录</button>
+					</form>
+						//button标签的默认type属性值为submit
+				)
+			}
+		}
+		//渲染组件
+		ReactDOM.render(<Login/>,document.getElementById('test'))
+	</script>
+</body>
+</html>

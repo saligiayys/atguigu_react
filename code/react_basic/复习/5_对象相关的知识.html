@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Document</title>
+</head>
+
+<body>
+	<script type="text/javascript">
+		let a = 'name'
+
+		let obj = {} // 需求：{name:'tom'}，动态地读取变量a的值，把name作为对象obj的属性名，而不是手写 obj.name = "tom"
+		obj[a] = 'tom'  //对象读取变量，要用中括号
+		console.log(obj);
+
+
+		//copy自javascript的day05第7课，属性名和属性值
+		/*
+		* 向对象中添加属性
+		* 属性名：
+		* 	- 对象的属性名不强制要求遵守标识符的规范
+		* 		什么乱七八糟的名字都可以使用
+		* 	- 但是我们使用是还是尽量按照标识符的规范去做
+		* 
+		*/
+		obj.name = "孙悟空";
+
+		//obj.var = "hello";
+
+		/*
+		 * 如果要使用特殊的属性名，不能采用.的方式来操作
+		 * 	需要使用另一种方式：
+		 * 		语法：对象["属性名"] = 属性值
+		 * 	读取时也需要采用这种方式
+		 * 
+		 * 使用[]这种形式去操作属性，更加的灵活，
+		 * 	在[]中可以直接传递一个变量，这样变量值是多少就会读取那个属性
+		
+			其实本质是类似数组，可以看作是伪数组，对象也有索引，只是索引是属性名
+			这样相当于给对象obj添加属性，但数字无法通过.的方式调用，我个人认为，如果使用数字，则相当于索引了。
+		 * 
+		 */
+		obj["123"] = 789;	//不能 obj.789调用，对象是特殊的数组，这里应该是相当于给obj的第123的索引的值定义成789，可以这样调用
+		obj["nihao"] = "你好";
+		var n = "nihao";
+		//console.log(obj["123"]);
+		console.log(obj[n]);//你好
+		console.log(obj);
+		console.log(obj.nihao);
+		console.log(obj["nihao"]);
+		console.log(obj[123]);
+
+
+	</script>
+</body>
+
+</html>
