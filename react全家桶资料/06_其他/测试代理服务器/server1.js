@@ -4,8 +4,8 @@ const app = express()//创建app服务器对象
 //全局中间件
 app.use((request, response, next) => {//一旦有人请求该服务器，就会输出以下内容
 	console.log('有人请求服务器1了');
-	console.log('请求来自于', request.get('Host'));
-	console.log('请求的地址', request.url);
+	console.log('请求来自于', request.get('Host'));//从setUpProxy.js里获取的Host
+	console.log('请求的地址', request.url);//用来测试写/api1和不写的区别
 	next()
 })
 
@@ -24,4 +24,7 @@ app.listen(5000, (err) => {
 	if (!err) console.log('服务器1启动成功了,请求学生信息地址为：http://localhost:5000/students');
 })
 
+
 //使用命令：node server1.js  开启服务器
+//凡是对服务器里的代码进行了修改，都要重新启动服务器
+//cls清空终端

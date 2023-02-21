@@ -8,7 +8,7 @@ export default class App extends Component {
 		xhr: const xhr = new XMLHttpRequest()		最原始
 			jQuery: $.get()		可能产生回调地狱
 			axios:	可以解决回调地狱，因为是promise风格。ps：前端必须掌握好promise
-			但jQuery和axios都是对xhr的封装。（服务器端的axios不是对xhr的封装，因为服务器端没有xhr，而使用的http）
+			但jQuery和axios都是对xhr的封装。（服务器端的axios不是对xhr的封装，因为服务器端没有xhr，而使用的http。也就是说github案例的server里的axios虽然看着一样，但底层不一样？）
 			且都需要下载，是第三方对xhr的封装
 
 		fetch：另一种发送ajax请求的方式，和xhr并列。
