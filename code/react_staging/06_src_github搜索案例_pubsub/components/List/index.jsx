@@ -22,7 +22,7 @@ export default class List extends Component {
 		//token，相当于setTimeout的id，用于最后取消订阅使用。
 		this.token = PubSub.subscribe('atguigu', (_, stateObj) => {
 			console.log("List组件收到数据了！", stateObj);
-			this.setState(stateObj)
+			this.setState(stateObj)//setState是合并不是覆盖，而传来的stateObj就是一个状态对象，因此setState只会合并相同key的属性，其他的保留原样。
 			//组件已挂载就开始订阅消息。
 			//只要有人发送消息名为atguigu的消息，该回调函数就会执行，更新状态对象，使用的数据就是Search发布来的
 		})

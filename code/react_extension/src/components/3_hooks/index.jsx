@@ -80,10 +80,11 @@ function Demo() {
 	//如何解决呢？其实useEffect()还可以传入第二个参数，一个空的数组。加上这个[]后会发现，@只有在第一次挂载时输出。
 	//原理：不写[]，底层会在所有状态发生改变的时候，再次调用useEffect里的函数，也就是1+n次。
 	//而[]起到一个监测的作用。如果不写，则表示监测所有的state。无论上面的count或name哪个改变，都会调用这个函数。
-	//如果写的是[]空数组，则表示谁也不监测。
-	//因此不写[]表示默认监测所有state，写[]表示所有state都不检测。[count]表示只监测state里的count，即count变化时，会调用该函数。
-	//所以，如果不使用[]，则useEffect()形参里的函数相当于componentDidMount() + componentDidUpdate()这两个钩子
-	//如果使用[]，则useEffect()形参里的函数只相当于componentDidMount()这个钩子。此时使用定时器就没有问题了！！！
+	//如果写的是[]空数组，则表示谁也不监测，也就是不会更新组件(相当于componentDidUpdate这个钩子被取消了)。
+	//因此不写[]表示默认监测所有state，写[]表示所有state都不检测。[count]表示只监测state里的count，即count变化时，组件更新，componentDidUpdate触发，会调用该函数。
+	//所以，如果不使用[]，则useEffect()形参里的函数相当于componentDidMount() + componentDidUpdate()这两个钩子，且componentDidUpdate不监视state，只要有state更新，就会触发
+	//或者使用[]且里面有内容比如count，则也相当于componentDidMount() + componentDidUpdate()这两个钩子，但componentDidUpdate只监视count，只有当count更新，组件才会更新，节省消耗，提升性能。
+	//如果使用[]且里面是空的，则useEffect()形参里的函数只相当于componentDidMount()这个钩子。此时使用定时器就没有问题了！！！
 	//此外，useEffect()的形参里的这个函数，如果返回一个函数，这个被返回的函数相当于componentWillUnmount生命周期钩子！！
 	//小结：可以把 useEffect Hook 看做如下三个函数的组合
 	//         componentDidMount()

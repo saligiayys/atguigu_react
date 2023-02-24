@@ -1,46 +1,38 @@
 import React, { Component } from 'react'
-import PubSub from 'pubsub-js'
+import PropTypes from 'prop-types'
+import Item from '../Item'
 import './index.css'
 
 export default class List extends Component {
 
-	state = { //初始化状态
-		users:[], //users初始值为数组
-		isFirst:true, //是否为第一次打开页面
-		isLoading:false,//标识是否处于加载中
-		err:'',//存储请求相关的错误信息
-	} 
-
-	componentDidMount(){
-		this.token = PubSub.subscribe('atguigu',(_,stateObj)=>{
-			this.setState(stateObj)
-		})
-	}
-
-	componentWillUnmount(){
-		PubSub.unsubscribe(this.token)
+	//对接收的props进行：类型、必要性的限制
+	static propTypes = {
+		todos: PropTypes.array.isRequired,
+		updateTodo: PropTypes.func.isRequired,
+		deleteTodo: PropTypes.func.isRequired,
 	}
 
 	render() {
-		const {users,isFirst,isLoading,err} = this.state
+		//接收从App传来的props
+		//updateTodo，需要转手传给子组件Item，自己不用
+		const { todos, updateTodo, deleteTodo } = this.props
 		return (
-			<div className="row">
+			<ul className="todo-main">
 				{
-					isFirst ? <h2>欢迎使用，输入关键字，随后点击搜索</h2> :
-					isLoading ? <h2>Loading......</h2> :
-					err ? <h2 style={{color:'red'}}>{err}</h2> :
-					users.map((userObj)=>{
-						return (
-							<div key={userObj.id} className="card">
-								<a rel="noreferrer" href={userObj.html_url} target="_blank">
-									<img alt="head_portrait" src={userObj.avatar_url} style={{width:'100px'}}/>
-								</a>
-								<p className="card-text">{userObj.login}</p>
-							</div>
-						)
+					todos.map(todoObj => {
+						//updateTodo不用加this.，因为不是List自己的，而是从App接收来的
+						return <Item key={todoObj.id} {...todoObj} updateTodo={updateTodo} deleteTodo={deleteTodo} />
+						// return <Item key={todoObj.id} name={todoObj.name} id={todoObj.id} done={todoObj.done} updateTodo={updateTodo} deleteTodo={deleteTodo}/>
+						//使用{...todoObj}，代替name={todoObj.name} id={todoObj.id} done={todoObj.done}，是等价的
+						//不能写成 todoObj={...todoObj}和App里传递todo={todo}是两回事，todo={todo}，是把整个这个数组赋值给同名变量todo
+						//这是在展开todoObj这个对象，该对象里有id=xxx,name=xxx,done=xxx
+						//todoObj是一个对象，里面有id,name,done。而todo是一个数组，是由todoObj对象组成的
+						//因此就相当于你这么写：<Item id=xxx,name=xxx,done=xxx/>，因为是固定值，不需要{}
+						//但可以写成todoObj={todoObj}，然后在Item里取todoObj，然后todoObj.id也行
 					})
 				}
-			</div>
+			</ul>
+			//使用{...todo} 批量向Item组件传入props
 		)
 	}
 }
