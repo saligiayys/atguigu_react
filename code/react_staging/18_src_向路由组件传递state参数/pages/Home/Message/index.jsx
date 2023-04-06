@@ -5,13 +5,13 @@ import Detail from './Detail'
 export default class Message extends Component {
 
 	/*
-		传递参数方式3：state参数 注意不是组件里的state，而是路由组件里独有的
+		传递参数方式3：state参数 注意不是组件里的state！而是路由组件里独有的
 					优势：传递的数据不会体现在地址栏里。
-		1.传递state参数：to={{}} to是一个对象(注意是两层{}，第一层是js表达式)，不再是一个字符串
+		1.传递state参数：to={{}} to是一个对象(注意是两层{}，第一层是js表达式，不再单单是一个字符串，比如你可以用模板字符串
 		<Link to={{pathname:'/home/message/detail',state:{id:msgObj.id,title:msgObj.title}}}>{msgObj.title}</Link>
 		既然是对象，就可以使用多组key-value。注意第一个key是pathname，不是path
 
-		ps:其实params和search的方式，to也可以是一个对象，但你只需把参数写进路径即可，为啥还要费二遍事呢？
+		ps:其实params和search的方式，to也可以是一个对象，第一个属性也是pathname，但你只需把参数写进路径即可，为啥还要费二遍事呢？
 
 		2.申明接收search参数：
 		state参数无需声明接收，正常注册路由即可
@@ -52,10 +52,10 @@ export default class Message extends Component {
 					}
 				</ul>
 				<hr/>
-				{/* 声明接收params参数 */}
+				{/* 上上节课，声明接收params参数 */}
 				{/* <Route path="/home/message/detail/:id/:title" component={Detail}/> */}
 
-				{/* search参数无需声明接收，正常注册路由即可 */}
+				{/* 上节课，search参数无需声明接收，正常注册路由即可 */}
 				{/* <Route path="/home/message/detail" component={Detail}/> */}
 
 				{/* state参数无需声明接收，正常注册路由即可 */}

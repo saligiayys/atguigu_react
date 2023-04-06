@@ -6,13 +6,13 @@ import Header from './components/Header' //Header是一般组件
 import MyNavLink from './components/MyNavLink'
 
 export default class App extends Component {
-	//二级路由，也叫嵌套路由。
+	//二级路由，也叫嵌套路由，多级路由（因为如果你说二级路由，那应该也有三级，四级。。。）。
 	//在展示区里又出现了导航区，点击后又出现了展示区
 	//此案例使用的是04_静态页面的route_page2
 
 	//说明：此案例中，News和Messages组件，是Home的子组件。
 	//在目录结构上，可以把News和Message放在Home组件的目录下。
-	//也可以不嵌套，写成：Home_News和 Home_Message
+	//也可以不嵌套，写成：Home_News和 Home_Message （缺点是，如果还有子路由呢？比如Home_Message_xxx_xxx_xxx，当然上面那种方式也有影响。）
 	//工作中这两种写法都有。
 
 	render() {

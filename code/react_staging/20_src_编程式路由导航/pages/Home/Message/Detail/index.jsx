@@ -21,7 +21,7 @@ export default class Detail extends Component {
 		const {id,title} = this.props.location.state || {}
 
 		const findResult = DetailData.find((detailObj)=>{
-			return detailObj.id === id
+			return detailObj.id === id 	 	 	
 		}) || {}
 		return (
 			<ul>

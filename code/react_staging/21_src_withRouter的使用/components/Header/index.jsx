@@ -6,11 +6,13 @@ class Header extends Component {
 	//Header是一般组件
 	//一般组件没有history这个属性。如果不传props，一般组件一开始的props是一个空对象{}			ps:在vue里，vue的实例对象身上都有这些方法，不区分一般组件还是路由组件。
 	//因此不能直接调用goBack()等方法，因为history是undefined
-	//我们需要使用withRouter，它是一个函数
+	//我们需要使用withRouter，它是一个函数，注意首字母是小写，不是组件
 	//使用方法在最下面
 	//withRouter可以加工一般组件，让一般组件具备路由组件所特有的API
 	//withRouter的返回值是一个新组件
 	//它是专门用于解决在一般组件里使用路由组件api的问题的。很常用
+
+	//补充，也可以使用replace和push，只不过不容易传递参数，因为这里并没有定义真正的路由组件。
 
 	back = ()=>{
 		this.props.history.goBack()
@@ -40,5 +42,6 @@ class Header extends Component {
 }
 
 export default withRouter(Header)
-//withRouter可以加工一般组件，让一般组件具备路由组件所特有的API
+//withRouter可以加工一般组件，让一般组件具备路由组件所特有的APIs (history,location,match)
 //withRouter的返回值是一个新组件
+//所以这里暴露的是使用withRouter加工完的Header

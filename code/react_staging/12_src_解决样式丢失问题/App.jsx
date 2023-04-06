@@ -7,7 +7,7 @@ import MyNavLink from './components/MyNavLink'
 
 export default class App extends Component {
 	//需求：给所有路由路径前加一个固定的前缀，可以是项目名或公司名，比如：/atguigu/about
-	//问题：刷新页面后，BootStrap样式丢失
+	//问题：点击Home/About后，刷新页面后，BootStrap样式丢失
 
 	//修改路径之前，通过开发者工具NetWork查看bootstrap.css这个请求，里面的Request URL是http://localhost:3000/css/bootstrap.css
 	//在地址栏输入该url可以成功得到bootstrap的代码(或者看Response里的内容)。刷新页面后，地址依旧和上面一样，页面样式也没有丢失。
@@ -26,17 +26,17 @@ export default class App extends Component {
 	//结论：路由路径是多级的结构，当刷新时，样式就会丢失。原因是atguigu被认为是路径的一部分
 	//解决方式有三种：
 	//首先注意，单页面应用只有一个页面，即public下的index.html，所有组件都是从这里开始的。
-	//方式1:常用
+	//方式1:最常用
 	//把引入bootstrap时用的的路径：'./css/bootstrap.css' 换成 ：'/css/bootstrap.css'  也就是把.去掉
 	//原理，因为是相对路径，./的意思是以当前路径出发，在当前文件夹下找。
 	//当前文件是index.html!!! 所以路径变为http://localhost:3000/atguigu/css/bootstrap.css的话，就当然找不到了。
-	//而 /的意思是直接在localhost:3000下去找，或者说 / 代表的是在根目录
+	//而 /的意思是直接在localhost:3000下去找，也就是public文件夹，或者说 / 代表的是在根目录，相当于绝对路径
 
-	//方式2：只适用于React脚手架。
+	//方式2：常用，但只适用于React脚手架。
 	//把引入bootstrap时用的的路径换成：'%PUBLIC_URL%/css/bootstrap.css'
-	//%PUBLIC_URL%代表的就是public的绝对路径
+	//%PUBLIC_URL%代表的就是public文件夹的绝对路径
 
-	//方式3：用得少
+	//方式3：用得少，因为一般还是BrowserRouter用的多。
 	//如果坚持使用'./css/bootstrap.css'，需要在src下的index.js里把BrowserRouter改成HashRouter
 	//路径变为：localhost:3000/#/ 		之前讲过，#后的东西都认为是前端的资源，不会发给3000这台服务器
 	//所以atguigu会被忽略，bootstrap的地址依然为http://localhost:3000/css/bootstrap.css

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>2_受控组件</title>
 </head>
+
 <body>
 	<!-- 准备好一个“容器” -->
 	<div id="test"></div>
-	
+
 	<!-- 引入react核心库 -->
 	<script type="text/javascript" src="../js/react.development.js"></script>
 	<!-- 引入react-dom，用于支持react操作DOM -->
@@ -23,55 +25,55 @@
 		//所以以后到底用受控还是非受控？建议受控，因为受控组件里，一个ref都没有使用。
 
 		//创建组件
-		class Login extends React.Component{
+		class Login extends React.Component {
 
 			//初始化状态   
 			//虽然不初始化，直接在下面setState也可以控制state
 			//但因为这里你可以非常肯定将来会存入用户名和密码，所以我们最好先初始化一下state（即使没有值），然后再对其进行修改。不然就有点违背原则。
 			state = {
-				username:'', //用户名
-				password:'' //密码
+				username: '', //用户名
+				password: '' //密码
 			}
 
 			//保存用户名到状态中
-			saveUsername = (event)=>{
+			saveUsername = (event) => {
 				//随着你的输入，把这个用户名维护到state里。可以通过react开发者工具的Components来查看，不需要console.log
-				this.setState({username:event.target.value})
+				this.setState({ username: event.target.value })
 			}
 
 			//保存密码到状态中
-			savePassword = (event)=>{
+			savePassword = (event) => {
 				//随着你的输入，把这个密码维护到state里
-				this.setState({password:event.target.value})
+				this.setState({ password: event.target.value })
 			}
 
 			//表单提交的回调
-			handleSubmit = (event)=>{
+			handleSubmit = (event) => {
 				event.preventDefault() //阻止表单提交
-				const {username,password} = this.state//因为用户名和密码是存到state里的，且就是它们的值，而不是节点，不需要再.value!!!
+				const { username, password } = this.state//因为用户名和密码是存到state里的，且就是它们的值，而不是节点，不需要再.value!!!
 				alert(`你输入的用户名是：${username},你输入的密码是：${password}`)
 				//所以要注意，你怎么取的数据，取决于你把数据放哪里；取出来的东西是什么，取决于你当时是怎么存放的。
-
 			}
 
-			render(){
-				return(
-						//原生里有一个事件叫onchange，输入类的DOM都可以绑定。
-						//比如单选框，由选中变成未选中，就是一种改变。输入框从没有值到输入了值,从输入一个字到两个字都叫改变。
-						//react里是onChange。会随着你不断地输入，而不断地调用。因此我们可以随着输入，来实时获取值
-						//且发生onChange事件的元素是用户名输入框，且我们所需的也是用户名输入框里的值
-						//满足当发生事件的那个元素正好是你将要操作的那个元素时，就可以省略ref的条件。因此可以使用event.target
-						//然后随着你的输入，把这个值维护到state里。
+			render() {
+				return (
+					//原生里有一个事件叫onchange，输入类的DOM都可以绑定。
+					//比如单选框，由选中变成未选中，就是一种改变。输入框从没有值到输入了值,从输入一个字到两个字都叫改变。
+					//react里是onChange。会随着你不断地输入，而不断地调用。因此我们可以随着输入，来实时获取值
+					//且发生onChange事件的元素是用户名输入框，且我们所需的也是用户名输入框里的值
+					//满足当发生事件的那个元素正好是你将要操作的那个元素时，就可以省略ref的条件。因此可以使用event.target
+					//然后随着你的输入，把这个值维护到state里。
 					<form onSubmit={this.handleSubmit}>
-						用户名：<input onChange={this.saveUsername} type="text" name="username"/>
-						密码：<input onChange={this.savePassword} type="password" name="password"/>
+						用户名：<input onChange={this.saveUsername} type="text" name="username" />
+						密码：<input onChange={this.savePassword} type="password" name="password" />
 						<button>登录</button>
 					</form>
 				)
 			}
 		}
 		//渲染组件
-		ReactDOM.render(<Login/>,document.getElementById('test'))
+		ReactDOM.render(<Login />, document.getElementById('test'))
 	</script>
 </body>
+
 </html>

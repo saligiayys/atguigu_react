@@ -48,6 +48,8 @@
 			3.接收到的props不同：
 						一般组件：写组件标签时传递了什么，就能收到什么
 						路由组件：接收到三个固定的属性  老师把编码时会用到的信息留下了，底层使用的删除了。
+						history里的location（已从这里删除），和下面的location是一样的，
+						即history.location = location
 											history:
 														go: ƒ go(n)
 														goBack: ƒ goBack()
@@ -137,7 +139,7 @@
 						(1).BrowserRouter没有任何影响，因为state保存在history对象中。
 						(2).HashRouter刷新后会导致路由state参数的丢失
                             因为它没有使用history这个对象，也就没有history的API！！！
-			4.备注：HashRouter可以用于解决一些路径错误相关的问题。
+			4.备注：HashRouter可以用于解决一些路径错误相关的问题(样式丢失的解决方式之一，但用的不多)。
 
 ## 十四、antd的按需引入+自定主题
 			1.安装依赖：yarn add react-app-rewired customize-cra babel-plugin-import less less-loader

@@ -6,7 +6,7 @@ import Header from './components/Header' //Header是一般组件
 import MyNavLink from './components/MyNavLink'
 
 export default class App extends Component {
-	//需求：把后退，前进和go按钮放到头部组件里。
+	//需求：把后退，前进和go按钮放到Header组件里。
 	//见Header里的index.jsx
 
 	render() {

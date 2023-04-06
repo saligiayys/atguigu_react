@@ -11,11 +11,11 @@ export default class App extends Component {
 		所以虽然在此案例中，Home和About是组件，但是是路由组件，规范来说不能放在component目录里，而是pages里（记得修改引入地址）
 		但路由组件和一般组件最大的区别是：
 			一般组件如果我们没有传递props，其props里是空的。换句话说传什么，props收到什么。
-			而路由组件我们无法传递任何props，但收到路由器传递的三个最重要，固定的props的属性：
+			而路由组件我们无法传递任何props，但会收到路由器传递的三个最重要的，且固定的props的属性：
 				1.history
 				2.location
 				3.match
-				之后讲
+				看READEME
  	*/
 
 	//需求：点击路由链接，该链接高亮
@@ -23,8 +23,8 @@ export default class App extends Component {
 	//原理，bootstrap会给添加了active类名的标签设置样式。所以我们之前主动给一个标签加上class="active"
 	//而NavLink的特点是，只要点了这个标签，就自动追加active类名。react底层已经帮你封装好了。
 	//这恰好使得这两者的设计理念刚好一样，因此可以直接触发这里的高亮效果。
-	//注意：如果不想使用active类名，可以使用NavLink标签的属性activeClassName来自定义类名，默认是active
-	//ps：因为使用了bootstrap，权重很高，因此需要在public/index.html里给样式设置更高的权限！
+	//注意：如果UI使用的不是BoostStrap,不支持active类名，可以使用NavLink标签的属性activeClassName来自定义类名，默认是active
+	//ps：因为使用了bootstrap，权重很高，会抢atguigu的效果。因此需要在public/index.html里给样式设置更高的权限！
 
 	render() {
 		return (
@@ -43,6 +43,7 @@ export default class App extends Component {
 							<a className="list-group-item active" href="./home.html">Home</a> */}
 
 							{/* 在React中靠路由链接实现切换组件--编写路由链接 */}
+							{/* 点谁就给谁加上className='atguigu'，atguigu的样式写在了index.html的内部样式表里，需要加权重 */}
 							<NavLink activeClassName="atguigu" className="list-group-item" to="/about">About</NavLink>
 							<NavLink activeClassName="atguigu" className="list-group-item" to="/home">Home</NavLink>
 						</div>

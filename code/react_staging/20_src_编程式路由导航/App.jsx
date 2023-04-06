@@ -6,9 +6,9 @@ import Header from './components/Header' //Header是一般组件
 import MyNavLink from './components/MyNavLink'
 
 export default class App extends Component {
-	//如果我想让News组件展示后，等3秒钟自动跳转到Message组件
+	//如果我想让News组件展示后，等3秒钟自动跳转到Message组件(完成的代码在News路由组件里，教学内容在Home和Message组件里)
 	//此时不能使用Link或NavLink，因为这两个必须得有人点击才能跳转。
-	//因此，在不借助Link和NavLink这两个路由连接的情况下，写一段其他的代码，也能实现路由的跳转。
+	//因此，在不借助Link和NavLink这两个路由连接的情况下，写一段其他的代码，也能实现路由的跳转,
 	//这段代码就被称为编程式路由导航。
 
 	//案例需求：给每个消息的后面各添加两个按钮，一个是push，一个是replace。点击分别以push模式和replace模式跳转路由。

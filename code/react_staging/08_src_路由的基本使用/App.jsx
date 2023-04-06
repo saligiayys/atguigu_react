@@ -8,8 +8,11 @@ import React, { Component } from 'react'
 // react里也是，分为BrowserRouter和HashRouter两个路由器。这里先使用BrowserRouter
 //先提一下：HashRouter的路径长这样：localhost:3000/#/home。#后面的都是哈希值，不会发送给服务器，被视为前端资源。
 //react规定，一个页面只能由一个路由器管理（使用BrowserRouter或HashRouter标签包裹住）
-//一劳永逸的办法，是用BrowserRouter/HashRouter标签	包裹住index.js里的App组件！！！
-import {Link,Route} from 'react-router-dom'
+//也就是如果这里的<Link>和<Route>都分别被<BrowserRouter>或<HashRouter>标签包裹住，是两个路由器
+//可以用一个路由器把class为row的div整个包裹住。
+//但更加一劳永逸的办法，是用BrowserRouter/HashRouter标签	包裹住index.js里的App组件！！！
+import { Link, Route } from 'react-router-dom'
+// 注意是Route没有r
 
 import Home from './components/Home'
 import About from './components/About'
@@ -37,10 +40,14 @@ export default class App extends Component {
 							{/* <a className="list-group-item" href="./about.html">About</a>
 							<a className="list-group-item active" href="./home.html">Home</a> */}
 
-							{/* 在React中靠路由链接实现切换组件--编写路由链接 */}
+							{/* 
+							在React中靠路由链接实现切换组件--编写路由链接
+							意思是：如果点击了About标签，则修改浏览器地址栏为http://localhost:3000/about
+							 */}
 							<Link className="list-group-item" to="/about">About</Link>
 							<Link className="list-group-item" to="/home">Home</Link>
-							{/*注意点，/about不要写成大写，也不要写成./	*/}
+							{/*注意点，/about不区分大小写，一般写小写即可。也不要写成./	*/}
+							{/* 如果写成./，相当于www.baidu.com./xxx  你见过谁家有./???，所以不要写。 */}
 							{/*细节：虽然react里改成了Link标签，但浏览器其实不认识它，最后呈现在浏览器里的其实还是a标签，但通过某种方式，使其不会跳转	*/}
 						</div>
 					</div>
@@ -49,8 +56,8 @@ export default class App extends Component {
 							<div className="panel-body">
 								{/* 注册路由: 比如/about路径对应About组件，使其产生映射关系 */}
 								{/*意思就是：如果路径变成了/about，就展示About组件。注意component的c是小写的。也不要写成{<About/>}*/}
-								<Route path="/about" component={About}/>
-								<Route path="/home" component={Home}/>
+								<Route path="/about" component={About} />
+								<Route path="/home" component={Home} />
 							</div>
 						</div>
 					</div>

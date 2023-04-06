@@ -36,7 +36,7 @@ export default class Message extends Component {
 									{/* 向路由组件传递params参数 */}
 									{/* <Link to={`/home/message/detail/${msgObj.id}/${msgObj.title}`}>{msgObj.title}</Link> */}
 
-									{/* 向路由组件传递search参数 */}
+									{/* 向路由组件传递search参数，虽然和ajax的query长得一样，但这里是search参数 */}
 									<Link to={`/home/message/detail/?id=${msgObj.id}&title=${msgObj.title}`}>{msgObj.title}</Link>
 
 								</li>
@@ -45,7 +45,7 @@ export default class Message extends Component {
 					}
 				</ul>
 				<hr/>
-				{/* 声明接收params参数 */}
+				{/* 上节课声明接收params参数 */}
 				{/* <Route path="/home/message/detail/:id/:title" component={Detail}/> */}
 
 				{/* search参数无需声明接收，正常注册路由即可 */}

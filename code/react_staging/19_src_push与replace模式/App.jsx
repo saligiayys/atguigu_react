@@ -21,21 +21,24 @@ export default class App extends Component {
 
 
 		replace，是替换掉当前的这个历史记录，不会留下痕迹
-			如何开启replace模式：给Link标签加上replace属性，值为true，replace = {true} ，或直接简写 replace
+			如何开启replace模式：给Link标签(包括NavLink等)加上replace属性，值为true，replace = {true} ，或直接简写 replace，因为在js里，对象就是true
 			<Link replace to={{pathname:'/home/message/detail',state:{id:msgObj.id,title:msgObj.title}}}>{msgObj.title}</Link>
-			见Detail组件。我们个那3个消息开启了replace模式
+			见Detail组件。我们通过map遍历个那3个消息开启了replace模式
 				栈里的结构：
 
 						第三个历史记录：localhost:3000/home/message 当点击任意一个消息，比如消息1,时，被替换成localhost:3000/message.detail
 						第二个历史记录：localhost:3000/home/news   因为有Redirect
 						第一个历史记录：localhost:3000/about   因为有Redirect
-				该模式也可进行后退，前进
+				此时也可进行后退，前进
 				但因为只有detail设置了replace模式，
 				则依次点击完消息1,2,3后，点击后退会直接退回到localhost:3000/home/news，因为/message已经被替换掉了
 				而不管是消息1,2还是3，它们的路径都是localhost:3000/message.detail（因为用的是state）
 
 		因此，如果给所有路由的跳转都改成了replace模式，如下的/about和/home
-		则该页面无论点击什么，都不能后退，即无痕模式。
+		则该页面的后退按钮变成灰色，不能后退，即无痕模式。
+
+		注意：开启严格模式，是在注册路由时给Route添加标签属性exact；
+		     这里的replace模式，是在编写路由链接时，给Link(NavLink等)标签添加标签属性replace
 
 	 */
 

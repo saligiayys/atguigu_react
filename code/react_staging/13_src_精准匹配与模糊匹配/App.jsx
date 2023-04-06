@@ -13,9 +13,9 @@ export default class App extends Component {
 	//如果MyNavLink里设置的路径是"/home/a/b"，Route里要匹配的是"/home"，由于/home/a/b包含了/home，因此可以匹配上。
 	//但反之MyNavLink里是"/home"，Route里是"/home/a/b"，则匹配不成功。
 	//如果MyNavLink里设置的路径是"/a/home/b"，则也匹配不成功。
-	//因为人家要的是/home，而这里是/a/home/b  真正拿出来的是 home    a home b  （去掉了/）
+	//因为人家要的是/home，而这里是/a/home/b  真正拿出来的是 home  和  a home b 按顺序进行匹配 （去掉了/）
 	//结论，是按照顺序依次匹配。且如果一上来就匹配到了，则直接匹配成功；反之一上来就错了，则直接失败。
-	//窍门：人家要的东西，一个都不能少，且顺序也不能乱。
+	//窍门：人家(<Route>)要的东西，(<NavLink>里)一个都不能少(可以多但不能少)，且顺序也不能乱。
 
 	//精准匹配 或 严格匹配：
 	//MyNavLink里设置的路径，必须和Route里要匹配的路径完美对应。
