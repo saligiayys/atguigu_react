@@ -9,7 +9,7 @@ class Person extends Component {
 		const name = this.nameNode.value
 		const age = this.ageNode.value*1
 		const personObj = {id:nanoid(),name,age}
-		this.props.addPerson(personObj)
+		this.props.addPerson(personObj)//注意这两个addPerson是不一样的
 		this.nameNode.value = ''
 		this.ageNode.value = ''
 	}
@@ -39,4 +39,5 @@ export default connect(
 		count:state.count
 	}),//映射状态
 	{addPerson}//映射操作状态的方法
+	//addPerson:addPerson简写
 )(Person)

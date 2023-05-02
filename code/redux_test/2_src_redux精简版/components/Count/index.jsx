@@ -5,12 +5,13 @@ import store from '../../redux/store'
 export default class Count extends Component {
 	// state = {count:0,carName:'奔驰c63'};//count已经交给Redux管理了
 	state = {carName:'奔驰c63'};//只需留下不需要共享，自己使用的状态即可。
-	//索然案例里没有使用carName，但目的是告诉你，可以有自己的状态，需要和别的组件共享的才交给Redux
+	//虽然案例里没有使用carName，但目的是告诉你，可以有自己的状态，需要和别的组件共享的才交给Redux
 
 	//Redux只负责状态的管理。
 	//虽然通过count_reducer里的console.log(preState)可以看出状态确实改变了，但Redux默认不会帮你调用render()重新渲染页面。
-	//只有在React里，状态修改才会调用render()。
-	//因此我们需要某种方式来监听Redux里所保存的状态是否发生了改变。若状态发生了改变，则自己去调用render()
+	//因为在React里，只有状态修改时才会调用render()。
+	//因此我们需要某种方式来监听Redux里所保存的状态是否发生了改变。若状态发生了改变，则我们自己去调用render()
+
 	//方式如下：
 	//  componentDidMount(){ //写在这个生命周期钩子里
 	// 	监测redux中状态的变化，只要变化，就调用render
@@ -37,7 +38,7 @@ export default class Count extends Component {
 		//通知Redux加value。使用store的dispatch()方法
 		store.dispatch({type:'increment',data:value*1})//value是字符串，强转成num
 		//{type:'increment',data:value*1}就是action对象，只是该案例我们是自己写的，没用到action creator
-		//type的值要和reducer里switch的判断对应上
+		//type的值要和reducer里switch的判断对应上，比如这里的increment，是需要提前约定好的
 	}
 	//减法
 	decrement = ()=>{
@@ -48,7 +49,7 @@ export default class Count extends Component {
 	incrementIfOdd = ()=>{
 		const {value} = this.selectNumber
 		const count = store.getState()//不能解构赋值，因为getState()方法拿到的就是那个数字
-		//当然如果你reducer里返回的是对象，就会变成对象。但这里我们不需要这么麻烦，直接数字即可。
+		//当然如果你reducer里返回的是对象，就会变成对象，才可以解构。但这里我们不需要这么麻烦，直接数字即可。
 		if(count % 2 !== 0){
 			store.dispatch({type:'increment',data:value*1})
 		}
@@ -64,8 +65,9 @@ export default class Count extends Component {
 	render() {
 		return (//store是一个对象，在react里，不能直接输出。需要使用store的getState()方法。拿到的就是那个数字
 				//当然如果你reducer里返回的是对象，就会变成对象。但这里我们不需要这么麻烦，直接数字即可。
+				//调用store.getState()时，redux会自动帮你调用reducer
 			<div>
-				<h1>：{store.getState()}</h1>
+				<h1>当前求和为：{store.getState()}</h1>
 				<select ref={c => this.selectNumber = c}>
 					<option value="1">1</option>
 					<option value="2">2</option>

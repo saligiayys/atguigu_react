@@ -10,6 +10,6 @@ import persons from './person'
 
 //汇总所有的reducer变为一个总的reducer
 export default  combineReducers({
-	count,
+	count,  //变量名可以自己起，所以干脆上面引入时也叫count，这样count:count可以简写为count
 	persons
 })

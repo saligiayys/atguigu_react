@@ -6,34 +6,34 @@ import {
 	createIncrementAsyncAction
 } from '../../redux/actions/count'
 //引入connect用于连接UI组件与redux
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 //定义UI组件
 class Count extends Component {
 
-	state = {carName:'奔驰c63'}
+	state = { carName: '奔驰c63' }
 
 	//加法
-	increment = ()=>{
-		const {value} = this.selectNumber
-		this.props.jia(value*1)
+	increment = () => {
+		const { value } = this.selectNumber
+		this.props.jia(value * 1)
 	}
 	//减法
-	decrement = ()=>{
-		const {value} = this.selectNumber
-		this.props.jian(value*1)
+	decrement = () => {
+		const { value } = this.selectNumber
+		this.props.jian(value * 1)
 	}
 	//奇数再加
-	incrementIfOdd = ()=>{
-		const {value} = this.selectNumber
-		if(this.props.count % 2 !== 0){
-			this.props.jia(value*1)
+	incrementIfOdd = () => {
+		const { value } = this.selectNumber
+		if (this.props.count % 2 !== 0) {
+			this.props.jia(value * 1)
 		}
 	}
 	//异步加
-	incrementAsync = ()=>{
-		const {value} = this.selectNumber
-		this.props.jiaAsync(value*1,500)
+	incrementAsync = () => {
+		const { value } = this.selectNumber
+		this.props.jiaAsync(value * 1, 500)
 	}
 
 	render() {
@@ -61,14 +61,17 @@ export default connect(
 	//之前只有Count组件的时候，redux里只有一个0。但如今，redux里是一个对象，保存了Count和Person组件的状态。
 	// 因此不能光写count:state，而需要count:state.xxx
 	// state => ({count:state}),
+
+	//复习，这个state是redux里帮你保存的所有状态的总和的对象，是mapStateToProps函数传入的参数，这里简写了。
+	//state是react-redux帮你自动传的，因为你在index.js里用Provider通过props传递了store
 	state => ({
-		count:state.he,
-		renshu:state.rens.length
+		count: state.he,
+		renshu: state.rens.length
 	}),
 	{
-		jia:createIncrementAction,
-		jian:createDecrementAction,
-		jiaAsync:createIncrementAsyncAction,
+		jia: createIncrementAction,
+		jian: createDecrementAction,
+		jiaAsync: createIncrementAsyncAction,
 	}
 )(Count)
 

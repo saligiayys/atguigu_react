@@ -10,6 +10,6 @@ import countReducer from './count_reducer'
 
 //暴露store
 // const store = createStore(countReducer);
-// export store;
+// export default store;
 //也可以写成一行
 export default createStore(countReducer)

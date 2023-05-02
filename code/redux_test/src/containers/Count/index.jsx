@@ -57,11 +57,13 @@ class Count extends Component {
 }
 
 //使用connect()()创建并暴露一个Count的容器组件
+//通过props，把状态和函数传递给自己的UI组件
 export default connect(
 	state => ({
 		count:state.count,
 		personCount:state.persons.length
 	}),
 	{increment,decrement,incrementAsync}
+	//CountUI组件里方法名叫increment，Count组件的action里创建action的方法也叫increment，即increment:increment，直接简写increment
 )(Count)
 

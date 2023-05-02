@@ -4,6 +4,10 @@ import Count from './components/Count'
 export default class App extends Component {
 
 	/*
+		前两节的内容已经可以实现使用Redux统一管理状态了
+		这里开始是高级的操作
+
+		异步action不是必须的，完全可以和之前一样，在Count组件里做异步操作。
 		同步action和异步action
 		之前说，action其实就是obj对象，里面有type和data
 		但其实action还可以是函数function。
@@ -14,8 +18,8 @@ export default class App extends Component {
 		而现在我们不希望是Count组件来等，而是由redux的action creator来实现。
 
 		就比如之前讲的类比餐厅吃饭的例子，现在客人(组件)希望过一会再上菜，有两种方式。
-		1.客人自己等5分钟，然后叫服务员点餐。--- 同步
-		2.客人马上交服务员点餐，但要求5分钟后再上菜！--- 异步
+		1.客人自己等5分钟，然后叫服务员(Action Creator)点餐。--- 同步，客人自己等的5分钟
+		2.客人马上叫服务员点餐，但要求5分钟后再上菜！--- 异步，让服务员等5分钟
 
 		此时就要借助异步action来实现。
 		但是，虽然异步action的值是函数，但store只认可同步action。此时就需要借助redux-thunk中间件来和store“沟通”
@@ -28,7 +32,7 @@ export default class App extends Component {
 	render() {
 		return (
 			<div>
-				<Count/>
+				<Count />
 			</div>
 		)
 	}

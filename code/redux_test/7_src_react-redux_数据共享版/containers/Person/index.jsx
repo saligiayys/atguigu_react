@@ -11,6 +11,8 @@ class Person extends Component {
 		const personObj = {id:nanoid(),name,age}
 		//使用nanoide生成随机id
 		this.props.jiaYiRen(personObj)
+
+		//添加完成后清空输入框
 		this.nameNode.value = ''
 		this.ageNode.value = ''
 	}

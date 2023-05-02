@@ -57,6 +57,7 @@ class Count extends Component {
 }
 
 //使用connect()()创建并暴露一个Count的容器组件
+//通过props，把状态和函数传递给自己的UI组件
 export default connect(
 	state => ({
 		count:state.count,

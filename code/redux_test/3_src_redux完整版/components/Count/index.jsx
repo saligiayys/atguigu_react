@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 //引入store，用于获取redux中保存状态
 import store from '../../redux/store'
-//引入actionCreator，专门用于创建action对象
+//引入actionCreator，专门用于创建action对象。注意用的是分别暴露
 import {createIncrementAction,createDecrementAction} from '../../redux/count_action'
 //正常名字不应该这么长，直接叫increment，但因为下面还有increment，怕大家混淆。
 

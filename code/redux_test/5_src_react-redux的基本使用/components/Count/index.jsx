@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 export default class Count extends Component {
-	//删除一切和Redux相关的API和代码
+	//这里是Count UI组件。删除一切和Redux相关的API和代码
 
 	state = {carName:'奔驰c63'}
 
