@@ -3,6 +3,7 @@ import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
 在6里，之前的Switch被新的Routes代替了。注意Routes和Route的区别！
 Routes具有Switch的功能，即一旦匹配到一个路由就停止。区别是以前的Switch可以不用，但Routes必须使用，否则报错。
 在6里，之前用来重定向的Redirect被新的Navigate替换了。
+此外，Navigate还有要给caseSensitive属性，用于设置/about是否大小写敏感
 */
 import About from './pages/About';
 import Home from './pages/Home';

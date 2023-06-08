@@ -5,7 +5,7 @@
 
 const initState = 0 //初始化状态。当然你也可以设置初始化值为99等任意数，根据业务需要。
 //preState=initState形参的默认值(js基础)！如果函数调用时没有传递该参数的值(也就是undefined)，则该参数将使用预先定义的默认值。
-//只有undefined才会使用默认值(也就是不传参数，或显示的传入undefined值)，null和空字符串不生效
+//只有undefined才会使用默认值(也就是不传参数，或显示的传入undefined值时使用)，null和空字符串不生效
 //所以不传，或者是undefined就是0(redux默认就是undefined)。当然你也可以在下面的函数里先用if判断，或者直接在default里return 0(不推荐，代码可读性不高，想看初始值还得滑倒底去看switch里的default)。
 export default function countReducer(preState = initState, action) {
 	console.log(preState);//preState最开始是undefined。因为使用了形参默认值，后来变成了0。之后会根据不同运算输出不同的值

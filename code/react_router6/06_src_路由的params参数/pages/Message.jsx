@@ -22,7 +22,7 @@ const Message = () => {
                     messages.map((message) => {
                         return (
                             <li key={message.id}>
-                                {/* 1.传递params参数，需要在路由表里配置占位符 */}
+                                {/* 1.传递params参数，需要在路由表里配置占位符。这里就不能用outlet了，因为需要传参 */}
                                 <Link to={`details/${message.id}/${message.title}/${message.content}`}>{message.title}</Link>
                             </li>
                         )

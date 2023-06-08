@@ -6,6 +6,9 @@ const Home = () => {
     //Navigate只要渲染，就会修改路径，引起视图的切换。
     //一定要写to，否则报错。
     //Navigate默认push跳转，但它还能接收一个参数replace来设置replace跳转,默认为false
+    //如果忘了，看Router5里的前端路由基石。
+    //大概意思：浏览器的历史记录是栈结构，先进后出。push跳转就是在对上面新加一个条目，有历史记录，可以后退；
+    //而replace则是将栈顶那条替换了，导致历史记录无法后退到上一条，而是退回到上上条记录
 
     const [sum, setSum] = useState(1);
 

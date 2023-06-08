@@ -12,6 +12,7 @@ export default class App extends Component {
 	// 所有Redux相关的文件，都放在redux目录里
 
 	//安装Redux yarn add redux
+	//现在改了npm install @reduxjs/toolkit react-redux
 
 	render() {
 		return (

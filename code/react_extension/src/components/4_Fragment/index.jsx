@@ -1,14 +1,14 @@
-import React, { Component,Fragment } from 'react'
+import React, { Component, Fragment } from 'react'
 //引入Fragment
 
 export default class Demo extends Component {
 	render() {
 		return (//使用Fragment可以骗过jsx的语法检查。因为jsx要求必须要有一个根标签，但有时我们不希望使用太多无关的div使得html的结构太深。
-				//Fragment会被react解析，最后丢掉。真实的html结构里不会存在
+			//Fragment会被react解析，最后丢掉。真实的html结构里不会存在
 			// <div>
 			<Fragment key={1}>
-				<input type="text"/>
-				<input type="text"/>
+				<input type="text" />
+				<input type="text" />
 			</Fragment>
 			// </div>
 
